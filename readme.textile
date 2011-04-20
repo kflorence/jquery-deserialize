@@ -1,3 +1,7 @@
 h1. jQuery.deserialize
 
-Deserializes arrays and objects and populates a form with that datum. Think of it as the opposite of jQuery's native "jQuery.serializeArray()":http://api.jquery.com/serializeArray method or Ben Alman's "jQuery.serializeObject()":http://benalman.com/projects/jquery-misc-plugins/#serializeobject function.
+Deserializes strings, arrays or objects and populates a form with that datum.
+
+h2. What?
+
+Think of it as the opposite of the "jQuery.serialize()":http://api.jquery.com/serialize, "jQuery.serializeArray()":http://api.jquery.com/serializeArray or "jQuery.serializeObject()":http://benalman.com/projects/jquery-misc-plugins/#serializeobject functions.
