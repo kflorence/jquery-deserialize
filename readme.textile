@@ -1,6 +1,6 @@
 h1. jQuery.deserialize
 
-Deserializes strings, arrays or objects and populates a form with that datum.
+Deserializes strings, arrays or objects and populates a form with that data.
 
 h2. What?
 
