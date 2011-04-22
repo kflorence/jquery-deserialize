@@ -56,9 +56,8 @@
     if (type === "string") {
       var pair;
 
-      $.each(data.split("&"), function() {
-        pair = decodeURIComponent(this).split("=");
-        addPair(pair[0], pair[1]);
+      $.each(decodeURIComponent(data).split("&"), function() {
+        addPair.apply(window, this.split("="));
       });
     } else if (type === "array") {
       normalizedPairs = data;
