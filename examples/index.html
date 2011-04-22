@@ -42,7 +42,10 @@
         });
 
         $("#deserialize").click(function() {
-          $form.deserialize(method, true);
+          $form.deserialize({
+            data: method,
+            clearForm: true
+          });
         });
 
         $("#clear").click(function() {
