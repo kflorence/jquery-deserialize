@@ -8,9 +8,12 @@
  *  Dual licensed under the MIT and BSD licenses.
  */
 ;(function($) {
-  var normalizedPairs,
+  var hasOwn = Object.prototype.hasOwnProperty,
+      // Which inputs need to be checked
       rcheck = /^(radio|checkbox)$/i,
-      rselect = /^(select-one|select-multiple)$/i,
+      // Which inputs need to be selected
+      rselect = /^(option|select-one|select-multiple)$/i,
+      // Which inputs need a value set
       rvalue = /^(hidden|text|search|tel|url|email|password|datetime|date|month|week|time|datetime-local|number|range|color|submit|image|reset|button|textarea)$/i;
 
   // Add support for $.type pre 1.4.3
@@ -29,73 +32,139 @@
     });
   }
 
-  function addPair(name, value) {
+  // Adds name/value pairs to an array
+  function addItem(name, value) {
+    var i = 0,
+        length = this.length;
+
     if ($.isArray(value)) {
-      $.each(value, function() {
-        normalizedPairs.push({ name: name, value: this });
-      });
+      for (; i < length; i++) {
+        this.push({ name: name, value: value[i] });
+      }
     } else {
-      normalizedPairs.push({ name: name, value: value });
+      this.push({ name: name, value: value });
     }
   }
 
-  $.fn.deserialize = function(data, clearForm) {
-    if (!data || !this.length) {
+  // Returns the property to update
+  function getProperty(element) {
+    var property = element[0] || element;
+
+    property = property.type || property.tagName;
+
+    if (rvalue.test(property)) {
+      return "value";
+    } else if (rcheck.test(property)) {
+      return "checked";
+    } else if (rselect.test(property)) {
+      return "selected";
+    } else {
+      return null;
+    }
+  }
+
+  $.fn.deserialize = function(options) {
+    // Quick fail if no element is passed in
+    if (!this.length) {
       return this;
     }
 
-    var self = this, type = $.type(data);
+    options = $.extend(true, {}, $.fn.deserialize.options, options);
 
-    if (clearForm) {
-      $(":checked", self).removeAttr("checked");
-      $(":selected", self).removeAttr("selected");
+    var data = options.data,
+        dataType = $.type(data),
+        elements = this[0].elements || this.find(":input").get(),
+        serializedArray = [];
+
+    // We need data and elements to populate
+    if (!data || !elements) {
+      return this;
     }
 
-    normalizedPairs = [];
-
-    if (type === "string") {
-      var pair;
-
-      $.each(decodeURIComponent(data).split("&"), function() {
-        addPair.apply(window, this.split("="));
-      });
-    } else if (type === "array") {
-      normalizedPairs = data;
-    } else if (type === "object") {
-      $.each(data, function(name, value) {
-        addPair(name, value);
-      });
+    // Clear out old form values before populating
+    if (options.clearForm) {
+      // TODO
     }
 
-    if (normalizedPairs.length) {
-      var $input, attr, inputType;
+    var i,
+        length;
 
-      $.each(normalizedPairs, function(i, input) {
-        $input = self.find("[name='" + input.name + "']");
+    if (dataType === "string") {
+      data = decodeURIComponent(data).split("&");
 
-        if (!$input.length) {
-          return;
+      for (i = 0, length = data.length; i < length; i++) {
+        addItem.apply(serializedArray, data[i].split("="));
+      }
+    } else if (dataType === "array") {
+      serializedArray = data;
+    } else if (dataType === "object") {
+      var key;
+
+      for (key in data) {
+        if (hasOwn.call(data, key)) {
+          addItem.call(serializedArray, key, data[key]);
         }
+      }
+    }
 
-        inputType = ($input[0].type || $input[0].tagName).toLowerCase();
+    // Data set is empty
+    if (!(length = serializedArray.length)) {
+      return this;
+    }
 
-        if (rvalue.test(inputType)) {
-          $input.val(input.value);
-        } else {
-          if (rcheck.test(inputType)) {
-            attr = "checked";
-          } else if (rselect.test(inputType)) {
-            attr = "selected";
-            $input = $input.find("option");
+    var element,
+        elementLength,
+        item,
+        j,
+        property,
+        serialized,
+        value;
+
+    for (i = 0; i < length; i++) {
+      serialized = serializedArray[i];
+
+      // Element not found
+      if (!(element = elements[serialized.name])) {
+        continue;
+      }
+
+      // Invalid input type
+      if (!(property = getProperty(element))) {
+        continue;
+      }
+
+      // Use true if we need to select or check the element
+      value = property == "value" ? serialized.value : true;
+
+      // Name matches multiple inputs, find the one with the correct value
+      if ((elementLength = element.length)) {
+        for (j = 0; j < elementLength; j++) {
+          item = element[j];
+
+          // Not strict equals, allows for string/number comparison
+          if (item.value == serialized.value) {
+            item[property] = value;
+            break;
           }
-
-          $input.filter(function() {
-            return this.value == input.value;
-          }).attr(attr, true);
         }
-      });
+      }
+
+      // Single inputs
+      else {
+        element[property] = value;
+      }
     }
 
-    return this.trigger("deserialized");
+    // Let the element know we are done with it
+    return this.trigger(options.events.deserialized);
+  };
+
+  // Default options
+  $.fn.deserialize.options = {
+    data: null,
+    events: {
+      deserialized: "deserialized"
+    },
+    clearForm: false
   };
 })(jQuery);
