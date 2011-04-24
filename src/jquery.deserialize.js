@@ -3,22 +3,19 @@
  *
  *  @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
  *  @website https://github.com/kflorence/jquery-deserialize/
- *  @version 1.0.20110420
+ *  @version 1.0.20110423
  *
  *  Dual licensed under the MIT and BSD licenses.
  */
 ;(function($) {
-  var hasOwn = Object.prototype.hasOwnProperty,
-      // Which inputs need to be checked
-      rcheck = /^(radio|checkbox)$/i,
-      // Which inputs need to be selected
+  var rcheck = /^(radio|checkbox)$/i,
       rselect = /^(option|select-one|select-multiple)$/i,
-      // Which inputs need a value set
       rvalue = /^(hidden|text|search|tel|url|email|password|datetime|date|month|week|time|datetime-local|number|range|color|submit|image|reset|button|textarea)$/i;
 
   // Add support for $.type pre 1.4.3
   if (!$.type) {
-    var class2type = {}, toString = Object.prototype.toString;
+    var class2type = {},
+        toString = Object.prototype.toString;
 
     // Populate the class2type map
     $.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
@@ -34,8 +31,7 @@
 
   // Adds name/value pairs to an array
   function addItem(name, value) {
-    var i = 0,
-        length = this.length;
+    var i = 0, length = this.length;
 
     if ($.isArray(value)) {
       for (; i < length; i++) {
@@ -48,123 +44,93 @@
 
   // Returns the property to update
   function getProperty(element) {
-    var property = element[0] || element;
+    var type, property = null;
 
-    property = property.type || property.tagName;
+    element = element[0] || element;
+    type = element.type || element.tagName;
 
-    if (rvalue.test(property)) {
-      return "value";
-    } else if (rcheck.test(property)) {
-      return "checked";
-    } else if (rselect.test(property)) {
-      return "selected";
-    } else {
-      return null;
+    if (rvalue.test(type)) {
+      property = "value";
+    } else if (rcheck.test(type)) {
+      property = "checked";
+    } else if (rselect.test(type)) {
+      property = "selected";
     }
+
+    return property;
   }
 
-  $.fn.deserialize = function(options) {
-    // Quick fail if no element is passed in
-    if (!this.length) {
+  $.fn.deserialize = function(data, callback) {
+    if (!this.length || !data) {
       return this;
-    }
-
-    options = $.extend(true, {}, $.fn.deserialize.options, options);
-
-    var data = options.data,
-        dataType = $.type(data),
-        elements = this[0].elements || this.find(":input").get(),
-        serializedArray = [];
-
-    // We need data and elements to populate
-    if (!data || !elements) {
-      return this;
-    }
-
-    // Clear out old form values before populating
-    if (options.clearForm) {
-      // TODO
     }
 
     var i,
-        length;
+        length,
+        dataType = $.type(data),
+        elements = this[0].elements || this.find(":input").get(),
+        normalized = [];
 
     if (dataType === "string") {
       data = decodeURIComponent(data).split("&");
 
       for (i = 0, length = data.length; i < length; i++) {
-        addItem.apply(serializedArray, data[i].split("="));
+        addItem.apply(normalized, data[i].split("="));
       }
     } else if (dataType === "array") {
-      serializedArray = data;
+      normalized = data;
     } else if (dataType === "object") {
       var key;
 
       for (key in data) {
-        if (hasOwn.call(data, key)) {
-          addItem.call(serializedArray, key, data[key]);
+        if (data.hasOwnProperty(key)) {
+          addItem.call(normalized, key, data[key]);
         }
       }
     }
 
-    // Data set is empty
-    if (!(length = serializedArray.length)) {
+    if (!elements || !(length = normalized.length)) {
       return this;
     }
 
-    var element,
-        elementLength,
+    var current,
+        element,
         item,
         j,
+        len,
         property,
-        serialized,
         value;
 
     for (i = 0; i < length; i++) {
-      serialized = serializedArray[i];
+      current = normalized[i];
 
-      // Element not found
-      if (!(element = elements[serialized.name])) {
+      // Element not found or of invalid type
+      if (!(element = elements[current.name]) || !(property = getProperty(element))) {
         continue;
       }
 
-      // Invalid input type
-      if (!(property = getProperty(element))) {
-        continue;
-      }
+      // Use boolean if not operating on value property
+      value = property == "value" ? current.value : !!current.value;
 
-      // Use true if we need to select or check the element
-      value = property == "value" ? serialized.value : true;
-
-      // Name matches multiple inputs, find the one with the correct value
-      if ((elementLength = element.length)) {
-        for (j = 0; j < elementLength; j++) {
+      // Handle element with multiple inputs (checkbox, radio, select)
+      if ((len = element.length)) {
+        for (j = 0; j < len; j++) {
           item = element[j];
 
-          // Not strict equals, allows for string/number comparison
-          if (item.value == serialized.value) {
+          if (item.value == current.value) {
             item[property] = value;
             break;
           }
         }
-      }
-
-      // Single inputs
-      else {
+      } else {
         element[property] = value;
       }
     }
 
-    // Let the element know we are done with it
-    return this.trigger(options.events.deserialized);
-  };
+    if ($.isFunction(callback)) {
+      callback.call(this);
+    }
 
-  // Default options
-  $.fn.deserialize.options = {
-    data: null,
-    events: {
-      deserialized: "deserialized"
-    },
-    clearForm: false
+    return this;
   };
 })(jQuery);
