@@ -1,6 +1,6 @@
 h1. jQuery.deserialize
 
-    $("form").deserialize(data[, callback]);
+bc. $("form").deserialize(data[, callback]);
 
 * *data* A serialized String, Array or Object.
 * *callback* The function that will be executed upon completion.
