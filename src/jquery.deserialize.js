@@ -12,23 +12,6 @@
       rselect = /^(option|select-one|select-multiple)$/i,
       rvalue = /^(hidden|text|search|tel|url|email|password|datetime|date|month|week|time|datetime-local|number|range|color|submit|image|reset|button|textarea)$/i;
 
-  // Add support for $.type pre 1.4.3
-  if (!$.type) {
-    var class2type = {},
-        toString = Object.prototype.toString;
-
-    // Populate the class2type map
-    $.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
-      class2type["[object " + name + "]"] = name.toLowerCase();
-    });
-
-    $.extend({
-      type: function( obj ) {
-        return obj == null ? String( obj ) : class2type[ toString.call(obj) ] || "object";
-      }
-    });
-  }
-
   // Adds name/value pairs to an array
   function addItem(name, value) {
     var i = 0, length = this.length;
