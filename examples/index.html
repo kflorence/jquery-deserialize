@@ -42,9 +42,8 @@
         });
 
         $("#deserialize").click(function() {
-          $form.deserialize({
-            data: method,
-            clearForm: true
+          $form.deserialize(method, function() {
+            alert("done!");
           });
         });
 
@@ -54,6 +53,8 @@
           $form.find("input[type=text]").val("");
           $form.find("textarea").val("");
         });
+
+        $("#notForm").deserialize({ name: "name", value: "value" });
       });
     </script>
 
@@ -172,17 +173,18 @@
                 <option value="3">3</option>
               </select>
             </li>
-              <li>
-                <h4>Multiple Select List</h4>
-                <select name="selectMultiple" multiple="multiple">
-                  <option value=""></option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </li>
+            <li>
+              <h4>Multiple Select List</h4>
+              <select name="selectMultiple" multiple="multiple">
+                <option value=""></option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </li>
           </ol>
         </form>
+        <div id="notForm"></div>
       </div>
     </div>
   </body>
