@@ -3,7 +3,7 @@
  *
  *  @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
  *  @website https://github.com/kflorence/jquery-deserialize/
- *  @version 1.0.20110423
+ *  @version 1.0.0
  *
  *  Dual licensed under the MIT and BSD licenses.
  */
