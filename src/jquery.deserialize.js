@@ -25,24 +25,6 @@
     }
   }
 
-  // Returns the property to update
-  function getProperty(element) {
-    var type, property = null;
-
-    element = element[0] || element;
-    type = element.type || element.tagName;
-
-    if (rvalue.test(type)) {
-      property = "value";
-    } else if (rcheck.test(type)) {
-      property = "checked";
-    } else if (rselect.test(type)) {
-      property = "selected";
-    }
-
-    return property;
-  }
-
   $.fn.deserialize = function(data, callback) {
     if (!this.length || !data) {
       return this;
@@ -82,31 +64,34 @@
         j,
         len,
         property,
-        value;
+        type;
 
     for (i = 0; i < length; i++) {
       current = normalized[i];
 
-      // Element not found or of invalid type
-      if (!(element = elements[current.name]) || !(property = getProperty(element))) {
+      if (!(element = elements[current.name])) {
         continue;
       }
 
-      // Use boolean if not operating on value property
-      value = property == "value" ? current.value : !!current.value;
+      type = (len = element.length) ? element[0] : element;
+      type = type.type || type.tagName;
 
-      // Handle element with multiple inputs (checkbox, radio, select)
-      if ((len = element.length)) {
+      property = null;
+      rvalue.test(type) && (property = "value");
+      rcheck.test(type) && (property = "checked");
+      rselect.test(type) && (property = "selected");
+
+      // Handle element group
+      if (len) {
         for (j = 0; j < len; j++) {
           item = element[j];
 
           if (item.value == current.value) {
-            item[property] = value;
-            break;
+            item[property] = true;
           }
         }
       } else {
-        element[property] = value;
+        element[property] = current.value;
       }
     }
 
