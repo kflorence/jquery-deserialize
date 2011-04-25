@@ -1,0 +1,49 @@
+body {
+  font-family: "helvetica", "arial", "sans-serif";
+  font-size: 62.5%;
+  margin: 0;
+  padding: 0;
+}
+
+#wrapper {
+  font-size: 1.0em;
+  line-height: 1.4em;
+  padding: 0 10px;
+}
+
+h1 {
+  background-color: #333;
+  color: #fff;
+  font-size: 2.0em;
+  margin: 0;
+  padding: 10px;
+}
+
+h2 {
+  border-bottom: #aaa 1px solid;
+  margin: 0;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+#left {
+  float: left;
+  width: 410px;
+}
+
+#right {
+  border-left: #aaa 1px solid;
+  margin-left: 420px;
+  padding: 0 10px;
+}
+
+#preview {
+  height: 200px;
+  margin: 10px 0;
+  padding: 2px;
+  width: 400px;
+}
+
+form {
+  font-size: 1.2em;
+}

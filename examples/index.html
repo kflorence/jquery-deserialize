@@ -3,16 +3,19 @@
   <head>
     <title>jQuery.deserialize</title>
 
-    <script language="javascript" type="text/javascript" src="externals/jquery/jquery-1.4.3.min.js"></script>
-    <script language="javascript" type="text/javascript" src="../src/jquery.deserialize.js"></script>
-    <script language="javascript" type="text/javascript">
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+
+    <script type="text/javascript" src="../externals/json2.min.js"></script>
+    <script type="text/javascript" src="../externals/jquery/jquery-1.4.3.min.js"></script>
+    <script type="text/javascript" src="../src/jquery.deserialize.js"></script>
+    <script type="text/javascript">
       jQuery(function($) {
           var $form = $("#form"),
               method,
               methods = {
                 serializedArray: [
-                  { name: "text", value: "text (Array)" },
-                  { name: "textarea", value: "textarea (Array)" },
+                  { name: "text", value: "text" },
+                  { name: "textarea", value: "textarea" },
                   { name: "radio", value: 1 },
                   { name: "checkbox", value: 1 },
                   { name: "checkbox", value: 2 },
@@ -21,94 +24,42 @@
                   { name: "selectMultiple", value: 2 }
                 ],
                 serializedObject: {
-                  text: "text (Object)",
-                  textarea: "textarea (Object)",
-                  radio: 2,
-                  checkbox: 2,
+                  text: "text",
+                  textarea: "textarea",
+                  radio: "2",
+                  checkbox: "2",
                   select: 2,
                   selectMultiple: 2
                 },
-                serializedString: "text=text (String)&textarea=textarea (String)&radio=2&checkbox=1&checkbox=3&select=3&selectMultiple=1&selectMultiple=2",
-                serializedStringEncoded: "text%3Dtext%20(String)%26textarea%3Dtextarea%20(String)%26radio%3D3%26checkbox%3D2%26checkbox%3D3%26select%3D3%26selectMultiple%3D2%26selectMultiple%3D3"
+                serializedString: "text=text&textarea=textarea&radio=2&checkbox=1&checkbox=3&select=3&selectMultiple=1&selectMultiple=2",
+                serializedStringEncoded: "text%3Dtext%26textarea%3Dtextarea%26radio%3D3%26checkbox%3D2%26checkbox%3D3%26select%3D3%26selectMultiple%3D2%26selectMultiple%3D3"
               };
 
+        function clear() {
+          $form.get(0).reset();
+        }
+
         $("#serializeMethod").change(function() {
-          method = methods[$("#serializeMethod").val()];
-          if (method) {
-            $("#preview").val(JSON.stringify(method));
+          method = $("#serializeMethod").val();
+
+          if (method && methods[method]) {
+            $("#preview").val(JSON.stringify(methods[method]));
           } else {
             $("#preview").val("");
           }
-        });
+        }).change();
 
         $("#deserialize").click(function() {
+          clear();
+
           $form.deserialize(method, function() {
             alert("done!");
           });
         });
 
-        $("#clear").click(function() {
-          $form.find(":checked").removeAttr("checked");
-          $form.find(":selected").removeAttr("selected");
-          $form.find("input[type=text]").val("");
-          $form.find("textarea").val("");
-        });
-
-        $("#notForm").deserialize({ name: "name", value: "value" });
+        $("#clear").click(clear);
       });
     </script>
-
-    <style type="text/css">
-      body {
-        font-family: "helvetica", "arial", "sans-serif";
-        font-size: 62.5%;
-        margin: 0;
-        padding: 0;
-      }
-
-      #wrapper {
-        font-size: 1.0em;
-        line-height: 1.4em;
-        padding: 0 10px;
-      }
-
-      h1 {
-        background-color: #333;
-        color: #fff;
-        font-size: 2.0em;
-        margin: 0;
-        padding: 10px;
-      }
-
-      h2 {
-        border-bottom: #aaa 1px solid;
-        margin: 0;
-        margin-bottom: 10px;
-        padding: 10px;
-      }
-
-      #left {
-        float: left;
-        width: 410px;
-      }
-
-      #right {
-        border-left: #aaa 1px solid;
-        margin-left: 420px;
-        padding: 0 10px;
-      }
-
-      #preview {
-        height: 200px;
-        margin: 10px 0;
-        padding: 2px;
-        width: 400px;
-      }
-
-      form {
-        font-size: 1.2em;
-      }
-    </style>
   </head>
   <body>
     <h1>jQuery.deserialize</h1>
@@ -118,8 +69,7 @@
         <h2>Options</h2>
 
         <select id="serializeMethod">
-          <option value="">--Serialization Methods--</option>
-          <option value="serializedArray">Serialized Array</option>
+          <option value="serializedArray" selected="selected">Serialized Array</option>
           <option value="serializedObject">Serialized Object</option>
           <option value="serializedString">Serialized String</option>
           <option value="serializedStringEncoded">Serialized String (Encoded)</option>
@@ -167,7 +117,6 @@
             <li>
               <h4>Select List</h4>
               <select name="select">
-                <option value=""></option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -176,7 +125,6 @@
             <li>
               <h4>Multiple Select List</h4>
               <select name="selectMultiple" multiple="multiple">
-                <option value=""></option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -184,7 +132,6 @@
             </li>
           </ol>
         </form>
-        <div id="notForm"></div>
       </div>
     </div>
   </body>
