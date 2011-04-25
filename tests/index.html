@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <title>jQuery.deserialize Unit Tests</title>
+    <link rel="stylesheet" type="text/css" href="qunit/qunit/qunit.css" />
+    <script type="text/javascript" src="../external/jquery/jquery-1.4.3.min.js"></script>
+    <script type="text/javascript" src="../src/jquery.deserialize.js"></script>
+
+    <script type="text/javascript" src="qunit/qunit/qunit.js"></script>
+    <script type="text/javascript" src="unit/core.js"></script>
+
+    <script type="text/javascript">
+      jQuery(function() {
+        // Log to console
+        QUnit.log = function(test) {
+          if (typeof console !== "undefined" && console.log) {
+          console.log(test.message + ":", test.result);
+          }
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <h1 id="qunit-header">jQuery.deserialize Unit Tests</h1>
+    <h2 id="qunit-banner"></h2>
+    <h2 id="qunit-userAgent"></h2>
+    <ol id="qunit-tests"></ol>
+
+    <!-- Test markup -->
+    <div id="qunit-fixture">
+      <div id="invalid"></div>
+      <form id="form" name="form">
+        <ol class="example">
+          <li>
+            <h4>Text</h4>
+            <input name="text" type="text" value="" />
+          </li>
+          <li>
+            <h4>Textarea</h4>
+            <textarea name="textarea"></textarea>
+          </li>
+          <li>
+            <h4>Radio Group</h4>
+            <span class="group">
+              <label class="radio"><input name="radio" type="radio" value="1" />1</label>
+              <label class="radio"><input name="radio" type="radio" value="2" />2</label>
+              <label class="radio"><input name="radio" type="radio" value="3" />3</label>
+            </span>
+          </li>
+          <li>
+            <h4>Checkbox Group</h4>
+            <span class="group">
+              <label class="checkbox"><input name="checkbox" type="checkbox" value="1" />1</label>
+              <label class="checkbox"><input name="checkbox" type="checkbox" value="2" />2</label>
+              <label class="checkbox"><input name="checkbox" type="checkbox" value="3" />3</label>
+            </span>
+          </li>
+          <li>
+            <h4>Select List</h4>
+            <select name="select">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </li>
+          <li>
+            <h4>Multiple Select List</h4>
+            <select name="selectMultiple" multiple="multiple">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </li>
+        </ol>
+      </form>
+    </div>
+  </body>
+</html>
