@@ -10,13 +10,13 @@
 (function( jQuery ) {
 
 var rcheck = /^(radio|checkbox)$/i,
-		rselect = /^(option|select-one|select-multiple)$/i,
-		rvalue = /^(hidden|text|search|tel|url|email|password|datetime|date|month|week|time|datetime-local|number|range|color|submit|image|reset|button|textarea)$/i;
+	rselect = /^(option|select-one|select-multiple)$/i,
+	rvalue = /^(hidden|text|search|tel|url|email|password|datetime|date|month|week|time|datetime-local|number|range|color|submit|image|reset|button|textarea)$/i;
 
 // Adds name/value pairs to an array
 function addItem( name, value ) {
 	var i = 0,
-			length = this.length;
+		length = this.length;
 
 	if ( $.isArray( value ) ) {
 		for ( ; i < length; i++ ) {
@@ -34,8 +34,8 @@ jQuery.fn.extend({
 		}
 
 		var i, length,
-				elements = this[ 0 ].elements || this.find( ":input" ).get(),
-				normalized = [];
+			elements = this[ 0 ].elements || this.find( ":input" ).get(),
+			normalized = [];
 
 		if ( jQuery.isArray( data ) ) {
 			normalized = data;
