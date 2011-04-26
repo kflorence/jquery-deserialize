@@ -1,31 +1,17 @@
 /**
- *	jQuery.deserialize
+ * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
+ * @website https://github.com/kflorence/jquery-deserialize/
+ * @version 1.1.0
  *
- *	@author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
- *	@website https://github.com/kflorence/jquery-deserialize/
- *	@version 1.0.0
- *
- *	Dual licensed under the MIT and GPLv2 licenses.
+ * Dual licensed under the MIT and GPLv2 licenses.
  */
+
 (function( jQuery ) {
 
-var rcheck = /^(radio|checkbox)$/i,
+var push = Array.prototype.push,
+	rcheck = /^(radio|checkbox)$/i,
 	rselect = /^(option|select-one|select-multiple)$/i,
 	rvalue = /^(hidden|text|search|tel|url|email|password|datetime|date|month|week|time|datetime-local|number|range|color|submit|image|reset|button|textarea)$/i;
-
-// Adds name/value pairs to an array
-function addItem( name, value ) {
-	var i = 0,
-		length = this.length;
-
-	if ( $.isArray( value ) ) {
-		for ( ; i < length; i++ ) {
-			this.push({ name: name, value: value[ i ] });
-		}
-	} else {
-		this.push({ name: name, value: value });
-	}
-}
 
 jQuery.fn.extend({
 	deserialize: function( data, callback ) {
@@ -37,23 +23,33 @@ jQuery.fn.extend({
 			elements = this[ 0 ].elements || this.find( ":input" ).get(),
 			normalized = [];
 
+		if ( !elements ) {
+			return this;
+		}
+
 		if ( jQuery.isArray( data ) ) {
 			normalized = data;
 		} else if ( jQuery.isPlainObject( data ) ) {
-			var key;
+			var key, value;
 
 			for ( key in data ) {
-				addItem.call( normalized, key, data[ key ] );
+				jQuery.isArray( value = data[ key ] ) ?
+					push.apply( normalized, jQuery.map( value, function( v ) {
+						return { name: key, value: v };
+					})) : push.call( normalized, { name: key, value: value } );
 			}
 		} else if ( typeof data === "string" ) {
-			data = decodeURIComponent( data ).split ( "&" );
+			var parts;
+
+			data = decodeURIComponent( data ).split( "&" );
 
 			for ( i = 0, length = data.length; i < length; i++ ) {
-				addItem.apply( normalized, data[ i ].split( "=" ) );
+				parts = data[ i ].split( "=" );
+				push.call( normalized, { name: parts[ 0 ], value: parts[ 1 ] } );
 			}
 		}
 
-		if ( !elements || !( length = normalized.length ) ) {
+		if ( !( length = normalized.length ) ) {
 			return this;
 		}
 
