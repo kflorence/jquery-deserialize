@@ -1,138 +1,138 @@
 <!doctype html>
 <html>
-  <head>
-    <title>jQuery.deserialize</title>
+	<head>
+		<title>jQuery.deserialize</title>
 
-    <link rel="stylesheet" type="text/css" href="styles.css" />
+		<link rel="stylesheet" type="text/css" href="styles.css" />
 
-    <script type="text/javascript" src="../externals/json2.min.js"></script>
-    <script type="text/javascript" src="../externals/jquery/jquery-1.4.3.min.js"></script>
-    <script type="text/javascript" src="../src/jquery.deserialize.js"></script>
-    <script type="text/javascript">
-      jQuery(function($) {
-          var $form = $("#form"),
-              method,
-              methods = {
-                serializedArray: [
-                  { name: "text", value: "text" },
-                  { name: "textarea", value: "textarea" },
-                  { name: "radio", value: 1 },
-                  { name: "checkbox", value: 1 },
-                  { name: "checkbox", value: 2 },
-                  { name: "select", value: 1 },
-                  { name: "selectMultiple", value: 1 },
-                  { name: "selectMultiple", value: 2 }
-                ],
-                serializedObject: {
-                  text: "text",
-                  textarea: "textarea",
-                  radio: "2",
-                  checkbox: "2",
-                  select: 2,
-                  selectMultiple: 2
-                },
-                serializedString: "text=text&textarea=textarea&radio=2&checkbox=1&checkbox=3&select=3&selectMultiple=1&selectMultiple=2",
-                serializedStringEncoded: "text%3Dtext%26textarea%3Dtextarea%26radio%3D3%26checkbox%3D2%26checkbox%3D3%26select%3D3%26selectMultiple%3D2%26selectMultiple%3D3"
-              };
+		<script type="text/javascript" src="../externals/json2.min.js"></script>
+		<script type="text/javascript" src="../externals/jquery/jquery-1.4.3.min.js"></script>
+		<script type="text/javascript" src="../src/jquery.deserialize.js"></script>
+		<script type="text/javascript">
+			jQuery(function($) {
+					var $form = $("#form"),
+							method,
+							methods = {
+								serializedArray: [
+									{ name: "text", value: "text" },
+									{ name: "textarea", value: "textarea" },
+									{ name: "radio", value: 1 },
+									{ name: "checkbox", value: 1 },
+									{ name: "checkbox", value: 2 },
+									{ name: "select", value: 1 },
+									{ name: "selectMultiple", value: 1 },
+									{ name: "selectMultiple", value: 2 }
+								],
+								serializedObject: {
+									text: "text",
+									textarea: "textarea",
+									radio: "2",
+									checkbox: "2",
+									select: 2,
+									selectMultiple: 2
+								},
+								serializedString: "text=text&textarea=textarea&radio=2&checkbox=1&checkbox=3&select=3&selectMultiple=1&selectMultiple=2",
+								serializedStringEncoded: "text%3Dtext%26textarea%3Dtextarea%26radio%3D3%26checkbox%3D2%26checkbox%3D3%26select%3D3%26selectMultiple%3D2%26selectMultiple%3D3"
+							};
 
-        function clear() {
-          $form.get(0).reset();
-        }
+				function clear() {
+					$form.get(0).reset();
+				}
 
-        $("#serializeMethod").change(function() {
-          method = $("#serializeMethod").val();
+				$("#serializeMethod").change(function() {
+						method = methods[$("#serializeMethod").val()];
 
-          if (method && methods[method]) {
-            $("#preview").val(JSON.stringify(methods[method]));
-          } else {
-            $("#preview").val("");
-          }
-        }).change();
+					if (method) {
+						$("#preview").val(JSON.stringify(method));
+					} else {
+						$("#preview").val("");
+					}
+				}).change();
 
-        $("#deserialize").click(function() {
-          clear();
+				$("#deserialize").click(function() {
+					clear();
 
-          $form.deserialize(method, function() {
-            alert("done!");
-          });
-        });
+					$form.deserialize(method, function() {
+						alert("done!");
+					});
+				});
 
-        $("#clear").click(clear);
-      });
-    </script>
-  </head>
-  <body>
-    <h1>jQuery.deserialize</h1>
+				$("#clear").click(clear);
+			});
+		</script>
+	</head>
+	<body>
+		<h1>jQuery.deserialize</h1>
 
-    <div id="wrapper">
-      <div id="left">
-        <h2>Options</h2>
+		<div id="wrapper">
+			<div id="left">
+				<h2>Options</h2>
 
-        <select id="serializeMethod">
-          <option value="serializedArray" selected="selected">Serialized Array</option>
-          <option value="serializedObject">Serialized Object</option>
-          <option value="serializedString">Serialized String</option>
-          <option value="serializedStringEncoded">Serialized String (Encoded)</option>
-        </select>
+				<select id="serializeMethod">
+					<option value="serializedArray" selected="selected">Serialized Array</option>
+					<option value="serializedObject">Serialized Object</option>
+					<option value="serializedString">Serialized String</option>
+					<option value="serializedStringEncoded">Serialized String (Encoded)</option>
+				</select>
 
-        <br />
+				<br />
 
-        <textarea id="preview" readonly></textarea>
+				<textarea id="preview" readonly></textarea>
 
-        <br />
+				<br />
 
-        <button id="deserialize" name="deserialize">Deserialize</button>
-        <button id="clear" name="clear">Clear</button>
-      </div>
+				<button id="deserialize" name="deserialize">Deserialize</button>
+				<button id="clear" name="clear">Clear</button>
+			</div>
 
-      <div id="right">
-        <h2>Result</h2>
+			<div id="right">
+				<h2>Result</h2>
 
-        <form id="form" name="form">
-          <ol class="example">
-            <li>
-              <h4>Text</h4>
-              <input name="text" type="text" value="" />
-            </li>
-            <li>
-              <h4>Textarea</h4>
-              <textarea name="textarea"></textarea>
-            </li>
-            <li>
-              <h4>Radio Group</h4>
-              <span class="group">
-                <label class="radio"><input name="radio" type="radio" value="1" />1</label>
-                <label class="radio"><input name="radio" type="radio" value="2" />2</label>
-                <label class="radio"><input name="radio" type="radio" value="3" />3</label>
-              </span>
-            </li>
-            <li>
-              <h4>Checkbox Group</h4>
-              <span class="group">
-                <label class="checkbox"><input name="checkbox" type="checkbox" value="1" />1</label>
-                <label class="checkbox"><input name="checkbox" type="checkbox" value="2" />2</label>
-                <label class="checkbox"><input name="checkbox" type="checkbox" value="3" />3</label>
-              </span>
-            </li>
-            <li>
-              <h4>Select List</h4>
-              <select name="select">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
-            </li>
-            <li>
-              <h4>Multiple Select List</h4>
-              <select name="selectMultiple" multiple="multiple">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
-            </li>
-          </ol>
-        </form>
-      </div>
-    </div>
-  </body>
+				<form id="form" name="form">
+					<ol class="example">
+						<li>
+							<h4>Text</h4>
+							<input name="text" type="text" value="" />
+						</li>
+						<li>
+							<h4>Textarea</h4>
+							<textarea name="textarea"></textarea>
+						</li>
+						<li>
+							<h4>Radio Group</h4>
+							<span class="group">
+								<label class="radio"><input name="radio" type="radio" value="1" />1</label>
+								<label class="radio"><input name="radio" type="radio" value="2" />2</label>
+								<label class="radio"><input name="radio" type="radio" value="3" />3</label>
+							</span>
+						</li>
+						<li>
+							<h4>Checkbox Group</h4>
+							<span class="group">
+								<label class="checkbox"><input name="checkbox" type="checkbox" value="1" />1</label>
+								<label class="checkbox"><input name="checkbox" type="checkbox" value="2" />2</label>
+								<label class="checkbox"><input name="checkbox" type="checkbox" value="3" />3</label>
+							</span>
+						</li>
+						<li>
+							<h4>Select List</h4>
+							<select name="select">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+							</select>
+						</li>
+						<li>
+							<h4>Multiple Select List</h4>
+							<select name="selectMultiple" multiple="multiple">
+								<option value="1">1</option>
+								<option value="2">2</option>
+								<option value="3">3</option>
+							</select>
+						</li>
+					</ol>
+				</form>
+			</div>
+		</div>
+	</body>
 </html>
