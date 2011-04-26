@@ -20,7 +20,7 @@ function addItem( name, value ) {
 
 	if ( $.isArray( value ) ) {
 		for ( ; i < length; i++ ) {
-			this.push({ name: name, value: value[i] });
+			this.push({ name: name, value: value[ i ] });
 		}
 	} else {
 		this.push({ name: name, value: value });
@@ -81,7 +81,7 @@ jQuery.fn.extend({
 			// Handle element group
 			if ( len ) {
 				for ( j = 0; j < len; j++ ) {
-					item = element [j ];
+					item = element [ j ];
 
 					if ( item.value == current.value ) {
 						item[ property ] = true;
