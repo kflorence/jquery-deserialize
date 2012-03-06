@@ -1,7 +1,7 @@
 /**
  * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.1.0
+ * @version 1.1.1
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
@@ -29,6 +29,7 @@ jQuery.fn.extend({
 
 		if ( jQuery.isArray( data ) ) {
 			normalized = data;
+
 		} else if ( jQuery.isPlainObject( data ) ) {
 			var key, value;
 
@@ -38,14 +39,15 @@ jQuery.fn.extend({
 						return { name: key, value: v };
 					})) : push.call( normalized, { name: key, value: value } );
 			}
+
 		} else if ( typeof data === "string" ) {
 			var parts;
 
-			data = decodeURIComponent( data ).split( "&" );
+			data = data.split( "&" );
 
 			for ( i = 0, length = data.length; i < length; i++ ) {
-				parts = data[ i ].split( "=" );
-				push.call( normalized, { name: parts[ 0 ], value: parts[ 1 ] } );
+				parts =  data[ i ].split( "=" );
+				push.call( normalized, { name: parts[ 0 ], value: decodeURIComponent( parts[ 1 ] ) } );
 			}
 		}
 

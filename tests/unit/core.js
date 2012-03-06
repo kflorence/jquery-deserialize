@@ -7,10 +7,11 @@ test("Basic Requirements", function() {
   ok($, "$");
 });
 
-var str = "text=text&textarea=textarea&radio=3&checkbox=2&checkbox=3&select=3&selectMultiple=2&selectMultiple=3";
+var str = "text=text&textarea=textarea&radio=3&checkbox=2&checkbox=3&select=3&selectMultiple=2&selectMultiple=3",
+	encodedStr = "text=" + encodeURIComponent( "Thyme &time=again" );
 
 test("jQuery.deserialize(string)", function() {
-  expect(6);
+  expect(7);
 
   var $form = $("#form"), form = $form.get(0);
 
@@ -28,6 +29,13 @@ test("jQuery.deserialize(string)", function() {
   equals($form.find("[name=selectMultiple] > :selected").map(function() {
     return this.value;
   }).get().join(","), "2,3", "Serialized String: selectMultiple");
+
+  form.reset();
+
+  $form.deserialize(encodedStr);
+
+  // Properly decode URI encoded parameters
+  equals(form.text.value, "Thyme &time=again", "Serialized, encoded String: Thyme &time=again");
 });
 
 var arr = [
