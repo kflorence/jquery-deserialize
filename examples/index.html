@@ -32,7 +32,7 @@
 									selectMultiple: 2
 								},
 								serializedString: "text=text&textarea=textarea&radio=2&checkbox=1&checkbox=3&select=3&selectMultiple=1&selectMultiple=2",
-								serializedStringEncoded: "text%3Dtext%26textarea%3Dtextarea%26radio%3D3%26checkbox%3D2%26checkbox%3D3%26select%3D3%26selectMultiple%3D2%26selectMultiple%3D3"
+								serializedStringEncoded: "text=" + encodeURIComponent( "http://google.com" ) + "&textarea=" + encodeURIComponent( "Thyme &time=again" )
 							};
 
 				function clear() {
