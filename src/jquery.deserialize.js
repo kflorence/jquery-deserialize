@@ -47,7 +47,7 @@ jQuery.fn.extend({
 
 			for ( i = 0, length = data.length; i < length; i++ ) {
 				parts =  data[ i ].split( "=" );
-				push.call( normalized, { name: parts[ 0 ], value: decodeURIComponent( parts[ 1 ] ) } );
+				push.call( normalized, { name: decodeURIComponent( parts[ 0 ] ), value: decodeURIComponent( parts[ 1 ] ) } );
 			}
 		}
 
