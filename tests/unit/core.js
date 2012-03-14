@@ -8,10 +8,11 @@ test("Basic Requirements", function() {
 });
 
 var str = "text=text&textarea=textarea&radio=3&checkbox=2&checkbox=3&select=3&selectMultiple=2&selectMultiple=3",
-	encodedStr = "text=" + encodeURIComponent( "Thyme &time=again" );
+	encodedStr = "text=" + encodeURIComponent( "Thyme &time=again" ),
+    encodedFieldNameStr = encodeURIComponent( "textarray[]" ) + "=textarray";
 
 test("jQuery.deserialize(string)", function() {
-  expect(7);
+  expect(8);
 
   var $form = $("#form"), form = $form.get(0);
 
@@ -36,6 +37,12 @@ test("jQuery.deserialize(string)", function() {
 
   // Properly decode URI encoded parameters
   equals(form.text.value, "Thyme &time=again", "Serialized, encoded String: Thyme &time=again");
+
+  form.reset();
+
+  $form.deserialize(encodedFieldNameStr);
+
+  equals($('input[name="textarray[]"]', $form).val(), "textarray", "Serialized, encoded Fieldname: textarray[]");
 });
 
 var arr = [
