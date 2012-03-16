@@ -1,11 +1,10 @@
 /**
  * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.1.1
+ * @version 1.1.2
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
-
 (function( jQuery ) {
 
 var push = Array.prototype.push,
@@ -47,7 +46,7 @@ jQuery.fn.extend({
 
 			for ( i = 0, length = data.length; i < length; i++ ) {
 				parts =  data[ i ].split( "=" );
-				push.call( normalized, { name: parts[ 0 ], value: decodeURIComponent( parts[ 1 ] ) } );
+				push.call( normalized, { name: decodeURIComponent( parts[ 0 ] ), value: decodeURIComponent( parts[ 1 ] ) } );
 			}
 		}
 
