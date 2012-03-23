@@ -26,6 +26,7 @@
         "deserialize",
         "data"
     ],
+	"demo": "http://kflorence.github.com/jquery-deserialize/",
     "homepage": "https://github.com/kflorence/jquery-deserialize",
     "files": [
 		"dist/jquery.deserialize.min.js"
