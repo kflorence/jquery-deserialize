@@ -1,7 +1,7 @@
 /**
  * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.1.2
+ * @version 1.1.3
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
@@ -10,6 +10,7 @@
 var push = Array.prototype.push,
 	rcheck = /^(radio|checkbox)$/i,
 	rselect = /^(option|select-one|select-multiple)$/i,
+	rplus = /\+/g,
 	rvalue = /^(hidden|text|search|tel|url|email|password|datetime|date|month|week|time|datetime-local|number|range|color|submit|image|reset|button|textarea)$/i;
 
 jQuery.fn.extend({
@@ -42,11 +43,14 @@ jQuery.fn.extend({
 		} else if ( typeof data === "string" ) {
 			var parts;
 
-			data = data.split( "&" );
+			data = data.replace( rplus, " " ).split( "&" );
 
 			for ( i = 0, length = data.length; i < length; i++ ) {
 				parts =  data[ i ].split( "=" );
-				push.call( normalized, { name: decodeURIComponent( parts[ 0 ] ), value: decodeURIComponent( parts[ 1 ] ) } );
+				push.call( normalized, {
+					name: decodeURIComponent( parts[ 0 ] ),
+					value: decodeURIComponent( parts[ 1 ] )
+				});
 			}
 		}
 

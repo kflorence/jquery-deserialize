@@ -7,7 +7,7 @@ test("Basic Requirements", function() {
   ok($, "$");
 });
 
-var str = "text=text&textarea=textarea&radio=3&checkbox=2&checkbox=3&select=3&selectMultiple=2&selectMultiple=3",
+var str = "text=text+with+spaces&textarea=textarea&radio=3&checkbox=2&checkbox=3&select=3&selectMultiple=2&selectMultiple=3",
 	encodedStr = "text=" + encodeURIComponent( "Thyme &time=again" ),
     encodedFieldNameStr = encodeURIComponent( "textarray[]" ) + "=textarray";
 
@@ -20,7 +20,7 @@ test("jQuery.deserialize(string)", function() {
 
   $form.deserialize(str);
 
-  equals(form.text.value, "text", "Serialized String: text");
+  equals(form.text.value, "text with spaces", "Serialized String: text with spaces");
   equals(form.textarea.value, "textarea", "Serialized String: textarea");
   equals($form.find("[name=radio]:checked").val(), "3", "Serialized String: radio");
   equals($form.find("[name=checkbox]:checked").map(function() {
