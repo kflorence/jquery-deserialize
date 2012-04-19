@@ -1,7 +1,7 @@
 /**
  * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.1.3
+ * @version 1.1.4
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
@@ -43,13 +43,13 @@ jQuery.fn.extend({
 		} else if ( typeof data === "string" ) {
 			var parts;
 
-			data = data.replace( rplus, " " ).split( "&" );
+			data = data.split( "&" );
 
 			for ( i = 0, length = data.length; i < length; i++ ) {
 				parts =  data[ i ].split( "=" );
 				push.call( normalized, {
 					name: decodeURIComponent( parts[ 0 ] ),
-					value: decodeURIComponent( parts[ 1 ] )
+					value: decodeURIComponent( parts[ 1 ].replace( rplus, "%20" ) )
 				});
 			}
 		}
@@ -73,8 +73,10 @@ jQuery.fn.extend({
 
 			if ( rvalue.test( type ) ) {
 				property = "value";
+
 			} else if ( rcheck.test( type ) ) {
 				property = "checked";
+
 			} else if ( rselect.test( type ) ) {
 				property = "selected";
 			}
@@ -88,6 +90,7 @@ jQuery.fn.extend({
 						item[ property ] = true;
 					}
 				}
+
 			} else {
 				element[ property ] = current.value;
 			}
