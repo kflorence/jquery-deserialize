@@ -7,12 +7,12 @@ test("Basic Requirements", function() {
   ok($, "$");
 });
 
-var str = "text=text+with+spaces&textarea=textarea&radio=3&checkbox=2&checkbox=3&select=3&selectMultiple=2&selectMultiple=3",
-	encodedStr = "text=" + encodeURIComponent( "Thyme &time=again" ),
+var str = "text=text+with+spaces&textarea=textarea&multtext=hi&multtext=hello&radio=3&checkbox=2&checkbox=3&select=3&selectMultiple=2&selectMultiple=3",
+  encodedStr = "text=" + encodeURIComponent( "Thyme &time=again" ),
     encodedFieldNameStr = encodeURIComponent( "textarray[]" ) + "=textarray";
 
 test("jQuery.deserialize(string)", function() {
-  expect(8);
+  expect(9);
 
   var $form = $("#form"), form = $form.get(0);
 
@@ -22,6 +22,9 @@ test("jQuery.deserialize(string)", function() {
 
   equals(form.text.value, "text with spaces", "Serialized String: text with spaces");
   equals(form.textarea.value, "textarea", "Serialized String: textarea");
+  equals($form.find("[name=multtext]").map(function() {
+    return this.value;
+  }).get().join(","), "hi,hello", "Serialized Array: multiple hidden");
   equals($form.find("[name=radio]:checked").val(), "3", "Serialized String: radio");
   equals($form.find("[name=checkbox]:checked").map(function() {
     return this.value;
@@ -48,6 +51,8 @@ test("jQuery.deserialize(string)", function() {
 var arr = [
   { name: "text", value: "text" },
   { name: "textarea", value: "textarea" },
+  { name: "multtext", value: "hi" },
+  { name: "multtext", value: "hello" },
   { name: "radio", value: 3 },
   { name: "checkbox", value: 2 },
   { name: "checkbox", value: 3 },
@@ -57,7 +62,7 @@ var arr = [
 ];
 
 test("jQuery.deserialize(array)", function() {
-  expect(6);
+  expect(7);
 
   var $form = $("#form"), form = $form.get(0);
 
@@ -67,6 +72,9 @@ test("jQuery.deserialize(array)", function() {
 
   equals(form.text.value, "text", "Serialized Array: text");
   equals(form.textarea.value, "textarea", "Serialized Array: textarea");
+  equals($form.find("[name=multtext]").map(function() {
+    return this.value;
+  }).get().join(","), "hi,hello", "Serialized Array: multiple hidden");
   equals($form.find("[name=radio]:checked").val(), "3", "Serialized Array: radio");
   equals($form.find("[name=checkbox]:checked").map(function() {
     return this.value;
@@ -80,6 +88,7 @@ test("jQuery.deserialize(array)", function() {
 var obj = {
   text: "text",
   textarea: "textarea",
+  multtext: ["hi", "hello"],
   radio: 3,
   checkbox: [2, 3],
   select: 3,
@@ -87,7 +96,7 @@ var obj = {
 };
 
 test("jQuery.deserialize(object)", function() {
-  expect(6);
+  expect(7);
 
   var $form = $("#form"), form = $form.get(0);
 
@@ -97,6 +106,9 @@ test("jQuery.deserialize(object)", function() {
 
   equals(form.text.value, "text", "Serialized Array: text");
   equals(form.textarea.value, "textarea", "Serialized Array: textarea");
+  equals($form.find("[name=multtext]").map(function() {
+    return this.value;
+  }).get().join(","), "hi,hello", "Serialized Array: multiple hidden");
   equals($form.find("[name=radio]:checked").val(), "3", "Serialized Array: radio");
   equals($form.find("[name=checkbox]:checked").map(function() {
     return this.value;

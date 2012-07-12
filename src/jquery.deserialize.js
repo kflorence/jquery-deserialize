@@ -58,7 +58,7 @@ jQuery.fn.extend({
 			return this;
 		}
 
-		var current, element, item, j, len, property, type;
+		var current, element, item, j, len, property, type, lastname;
 
 		for ( i = 0; i < length; i++ ) {
 			current = normalized[ i ];
@@ -83,17 +83,28 @@ jQuery.fn.extend({
 
 			// Handle element group
 			if ( len ) {
-				for ( j = 0; j < len; j++ ) {
-					item = element [ j ];
+				if ( property !== "value" ) {
+					for ( j = 0; j < len; j++ ) {
+						item = element [ j ];
 
-					if ( item.value == current.value ) {
-						item[ property ] = true;
+						if ( item.value == current.value ) {
+							item[ property ] = true;
+						}
 					}
-				}
+				} else {
+					current.name !== lastname ? j = 0 : ++j;
 
+					item = element [ j ];
+					
+					if ( item !== undefined ) {
+						item[ property ] = current.value;
+					}
+
+					lastname = current.name;				
+				}
 			} else {
 				element[ property ] = current.value;
-			}
+			}					
 		}
 
 		if ( jQuery.isFunction( callback ) ) {
