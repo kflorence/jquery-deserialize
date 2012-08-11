@@ -65,8 +65,8 @@ jQuery.fn.extend({
             current = normalized[ i ];
 
             if ( !( element = elements[ current.name ]
-            		|| jQuery.grep( elements, function(e){ return e.id == current.name } )[0] 
-    				|| jQuery.grep( elements, function(e){ return e.name == current.name } ) ) ) {
+            		|| jQuery.grep( elements, function(e){ return e.id == current.name; } )[0] 
+    				|| jQuery.grep( elements, function(e){ return e.name == current.name; } ) ) ) {
                 continue;
             }
 
