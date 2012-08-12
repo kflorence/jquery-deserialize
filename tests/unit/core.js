@@ -12,40 +12,42 @@ var str = "text=text+with+spaces&textarea=textarea&multtext=hi&multtext=hello&ra
     encodedFieldNameStr = encodeURIComponent( "textarray[]" ) + "=textarray";
 
 test("jQuery.deserialize(string)", function() {
-    expect(9);
+    expect(18);
 
-    var $form = $("#form"), form = $form.get(0);
+    var $elements = [$("#form"), $("#wrapper")],
+        form = $elements[0].get(0);
 
-    form.reset();
+    $.each($elements, function(i, $element) {
+        form.reset();
 
-    $form.deserialize(str);
+        $element.deserialize(str);
 
-    equals(form.text.value, "text with spaces", "Serialized String: text with spaces");
-    equals(form.textarea.value, "textarea", "Serialized String: textarea");
-    equals($form.find("[name=multtext]").map(function() {
-        return this.value;
-    }).get().join(","), "hi,hello,howdy", "Serialized Array: multiple hidden");
-    equals($form.find("[name=radio]:checked").val(), "3", "Serialized String: radio");
-    equals($form.find("[name=checkbox]:checked").map(function() {
-        return this.value;
-    }).get().join(","), "2,3", "Serialized String: checkbox");
-    equals($form.find("[name=select]").val(), "3", "Serialized String: select");
-    equals($form.find("[name=selectMultiple] > :selected").map(function() {
-        return this.value;
-    }).get().join(","), "2,3", "Serialized String: selectMultiple");
+        equals($element.find("[name=text]").val(), "text with spaces", "Serialized String: text with spaces");
+        equals($element.find("[name=textarea]").val(), "textarea", "Serialized String: textarea");
+        equals($element.find("[name=multtext]").map(function() {
+            return this.value;
+        }).get().join(","), "hi,hello,howdy", "Serialized Array: multiple hidden");
+        equals($element.find("[name=radio]:checked").val(), "3", "Serialized String: radio");
+        equals($element.find("[name=checkbox]:checked").map(function() {
+            return this.value;
+        }).get().join(","), "2,3", "Serialized String: checkbox");
+        equals($element.find("[name=select]").val(), "3", "Serialized String: select");
+        equals($element.find("[name=selectMultiple] > :selected").map(function() {
+            return this.value;
+        }).get().join(","), "2,3", "Serialized String: selectMultiple");
 
-    form.reset();
+        form.reset();
 
-    $form.deserialize(encodedStr);
+        $element.deserialize(encodedStr);
 
-    // Properly decode URI encoded parameters
-    equals(form.text.value, "Thyme &time=again", "Serialized, encoded String: Thyme &time=again");
+        equals($element.find("[name=text]").val(), "Thyme &time=again", "Serialized, encoded String: Thyme &time=again");
 
-    form.reset();
+        form.reset();
 
-    $form.deserialize(encodedFieldNameStr);
+        $element.deserialize(encodedFieldNameStr);
 
-    equals($('input[name="textarray[]"]', $form).val(), "textarray", "Serialized, encoded Fieldname: textarray[]");
+        equals($element.find("input[name='textarray[]']").val(), "textarray", "Serialized, encoded fieldname: textarray[]");
+    });
 });
 
 var arr = [

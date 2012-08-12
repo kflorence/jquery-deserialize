@@ -1,11 +1,11 @@
 /**
  * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.1.5
+ * @version 1.1.6
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
-(function( jQuery ) {
+(function( $ ) {
 
 var push = Array.prototype.push,
     rcheck = /^(radio|checkbox)$/i,
@@ -13,29 +13,25 @@ var push = Array.prototype.push,
     rplus = /\+/g,
     rvalue = /^(hidden|text|search|tel|url|email|password|datetime|date|month|week|time|datetime-local|number|range|color|submit|image|reset|button|textarea)$/i;
 
-jQuery.fn.extend({
+$.fn.extend({
     deserialize: function( data, callback ) {
-        if ( !this.length || !data ) {
-            return this;
-        }
-
         var i, length,
-            elements = this[ 0 ].elements || this.find( ":input" ).get(),
+            elements = this[ 0 ].elements || this.find( "form" )[ 0 ].elements || this.closest( "form" )[ 0 ].elements,
             normalized = [];
 
-        if ( !elements ) {
+        if ( !this.length || !data || !elements ) {
             return this;
         }
 
-        if ( jQuery.isArray( data ) ) {
+        if ( $.isArray( data ) ) {
             normalized = data;
 
-        } else if ( jQuery.isPlainObject( data ) ) {
+        } else if ( $.isPlainObject( data ) ) {
             var key, value;
 
             for ( key in data ) {
-                jQuery.isArray( value = data[ key ] ) ?
-                    push.apply( normalized, jQuery.map( value, function( v ) {
+                $.isArray( value = data[ key ] ) ?
+                    push.apply( normalized, $.map( value, function( v ) {
                         return { name: key, value: v };
                     })) : push.call( normalized, { name: key, value: value } );
             }
@@ -64,9 +60,7 @@ jQuery.fn.extend({
         for ( i = 0; i < length; i++ ) {
             current = normalized[ i ];
 
-            if ( !( element = elements[ current.name ]
-            		|| jQuery.grep( elements, function(e){ return e.id == current.name; } )[0] 
-    				|| jQuery.grep( elements, function(e){ return e.name == current.name; } ) ) ) {
+            if ( !( element = elements[ current.name ] ) ) {
                 continue;
             }
 
@@ -101,7 +95,7 @@ jQuery.fn.extend({
             }
         }
 
-        if ( jQuery.isFunction( callback ) ) {
+        if ( $.isFunction( callback ) ) {
             callback.call( this );
         }
 
