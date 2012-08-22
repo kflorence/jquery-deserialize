@@ -8,17 +8,6 @@
 
     <script type="text/javascript" src="../external/qunit/qunit.js"></script>
     <script type="text/javascript" src="unit/core.js"></script>
-
-    <script type="text/javascript">
-      jQuery(function() {
-        // Log to console
-        QUnit.log = function(test) {
-          if (typeof console !== "undefined" && console.log) {
-          console.log(test.message + ":", test.result);
-          }
-        }
-      });
-    </script>
   </head>
   <body>
     <h1 id="qunit-header">jQuery.deserialize Unit Tests</h1>
@@ -29,56 +18,54 @@
     <!-- Test markup -->
     <div id="qunit-fixture">
       <div id="invalid"></div>
-      <div id="wrapper">
-          <form id="form" name="form">
-            <ol class="example">
-              <li>
-                <h4>Text</h4>
-                <input name="text" type="text" value="" />
-                <input name="textarray[]" type="text" value="" />
-                <input name="multtext" type="hidden" value="" />
-                <input name="multtext" type="hidden" value="" />
-              </li>
-              <li>
-                <h4>Textarea</h4>
-                <textarea name="textarea"></textarea>
-              </li>
-              <li>
-                <h4>Radio Group</h4>
-                <span class="group">
-                  <label class="radio"><input name="radio" type="radio" value="1" />1</label>
-                  <label class="radio"><input name="radio" type="radio" value="2" />2</label>
-                  <label class="radio"><input name="radio" type="radio" value="3" />3</label>
-                </span>
-              </li>
-              <li>
-                <h4>Checkbox Group</h4>
-                <span class="group">
-                  <label class="checkbox"><input name="checkbox" type="checkbox" value="1" />1</label>
-                  <label class="checkbox"><input name="checkbox" type="checkbox" value="2" />2</label>
-                  <label class="checkbox"><input name="checkbox" type="checkbox" value="3" />3</label>
-                </span>
-              </li>
-              <li>
-                <h4>Select List</h4>
-                <select name="select">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </li>
-              <li>
-                <h4>Multiple Select List</h4>
-                <select name="selectMultiple" multiple="multiple">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                </select>
-              </li>
-            </ol>
+      <form id="form" name="form">
+        <ol class="example">
+          <li>
+            <h4>Text</h4>
+            <input name="text" type="text" value="" />
+            <input name="textarray[]" type="text" value="" />
             <input name="multtext" type="hidden" value="" />
-          </form>
-      </div>
+            <input name="multtext" type="hidden" value="" />
+          </li>
+          <li>
+            <h4>Textarea</h4>
+            <textarea name="textarea"></textarea>
+          </li>
+          <li>
+            <h4>Radio Group</h4>
+            <span class="group">
+              <label class="radio"><input name="radio" type="radio" value="1" />1</label>
+              <label class="radio"><input name="radio" type="radio" value="2" />2</label>
+              <label class="radio"><input name="radio" type="radio" value="3" />3</label>
+            </span>
+          </li>
+          <li>
+            <h4>Checkbox Group</h4>
+            <span class="group">
+              <label class="checkbox"><input name="checkbox" type="checkbox" value="1" />1</label>
+              <label class="checkbox"><input name="checkbox" type="checkbox" value="2" />2</label>
+              <label class="checkbox"><input name="checkbox" type="checkbox" value="3" />3</label>
+            </span>
+          </li>
+          <li>
+            <h4>Select List</h4>
+            <select name="select">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </li>
+          <li>
+            <h4>Multiple Select List</h4>
+            <select name="selectMultiple" multiple="multiple">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </li>
+        </ol>
+        <input name="multtext" type="hidden" value="" />
+      </form>
     </div>
   </body>
 </html>

@@ -1,106 +1,138 @@
 /**
  * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.1.6
+ * @version 1.2.0
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
-(function( $ ) {
+(function( jQuery, undefined ) {
 
 var push = Array.prototype.push,
-    rcheck = /^(radio|checkbox)$/i,
-    rselect = /^(option|select-one|select-multiple)$/i,
+    rcheck = /^(?:radio|checkbox)$/i,
     rplus = /\+/g,
-    rvalue = /^(hidden|text|search|tel|url|email|password|datetime|date|month|week|time|datetime-local|number|range|color|submit|image|reset|button|textarea)$/i;
+    rselect = /^(?:option|select-one|select-multiple)$/i,
+    rvalue = /^(?:button|color|date|datetime|datetime-local|email|hidden|month|number|password|range|reset|search|submit|tel|text|textarea|time|url|week)$/i;
 
-$.fn.extend({
-    deserialize: function( data, callback ) {
-        var i, length,
-            elements = this[ 0 ].elements || this.find( "form" )[ 0 ].elements || this.closest( "form" )[ 0 ].elements,
-            normalized = [];
+function getElements( elements ) {
+    return elements.map(function() {
+            return this.elements ? jQuery.makeArray( this.elements ) : this;
+        }).filter( ":input" ).get();
+}
 
-        if ( !this.length || !data || !elements ) {
-            return this;
-        }
+function getElementsByName( elements ) {
+    var current,
+        elementsByName = {};
 
-        if ( $.isArray( data ) ) {
-            normalized = data;
+    jQuery.each( elements, function( i, element ) {
+        current = elementsByName[ element.name ];
+        elementsByName[ element.name ] = current === undefined ? element :
+            ( jQuery.isArray( current ) ? current.concat( element ) : [ current, element ] );
+    });
 
-        } else if ( $.isPlainObject( data ) ) {
-            var key, value;
+    return elementsByName;
+}
 
-            for ( key in data ) {
-                $.isArray( value = data[ key ] ) ?
-                    push.apply( normalized, $.map( value, function( v ) {
-                        return { name: key, value: v };
-                    })) : push.call( normalized, { name: key, value: value } );
-            }
+jQuery.fn.deserialize = function( data, options ) {
+    var i, length,
+        elements = getElements( this ),
+        normalized = [];
 
-        } else if ( typeof data === "string" ) {
-            var parts;
-
-            data = data.split( "&" );
-
-            for ( i = 0, length = data.length; i < length; i++ ) {
-                parts =  data[ i ].split( "=" );
-                push.call( normalized, {
-                    name: decodeURIComponent( parts[ 0 ] ),
-                    value: decodeURIComponent( parts[ 1 ].replace( rplus, "%20" ) )
-                });
-            }
-        }
-
-        if ( !( length = normalized.length ) ) {
-            return this;
-        }
-
-        var current, element, index, item, j, len, property, type,
-            names = {};
-
-        for ( i = 0; i < length; i++ ) {
-            current = normalized[ i ];
-
-            if ( !( element = elements[ current.name ] ) ) {
-                continue;
-            }
-
-            type = ( len = element.length ) ? element[ 0 ] : element;
-            type = type.type || type.nodeName;
-
-            if ( rvalue.test( type ) ) {
-                if ( len ) {
-                    j = names[ current.name ];
-                    element = element[ ( names[ current.name ] = ( j == undefined ) ? 0 : ++j ) ];
-                }
-
-                element.value = current.value;
-
-            } else {
-                property = null;
-
-                if ( rcheck.test( type ) ) {
-                    property = "checked";
-
-                } else if ( rselect.test( type ) ) {
-                    property = "selected";
-                }
-
-                for ( j = 0; j < len; j++ ) {
-                    item = element[ j ];
-
-                    if ( item.value == current.value ) {
-                        item[ property ] = true;
-                    }
-                }
-            }
-        }
-
-        if ( $.isFunction( callback ) ) {
-            callback.call( this );
-        }
-
+    if ( !data || !elements.length ) {
         return this;
     }
-});
+
+    if ( jQuery.isArray( data ) ) {
+        normalized = data;
+
+    } else if ( jQuery.isPlainObject( data ) ) {
+        var key, value;
+
+        for ( key in data ) {
+            jQuery.isArray( value = data[ key ] ) ?
+                push.apply( normalized, jQuery.map( value, function( v ) {
+                    return { name: key, value: v };
+                })) : push.call( normalized, { name: key, value: value } );
+        }
+
+    } else if ( typeof data === "string" ) {
+        var parts;
+
+        data = data.split( "&" );
+
+        for ( i = 0, length = data.length; i < length; i++ ) {
+            parts =  data[ i ].split( "=" );
+            push.call( normalized, {
+                name: decodeURIComponent( parts[ 0 ] ),
+                value: decodeURIComponent( parts[ 1 ].replace( rplus, "%20" ) )
+            });
+        }
+    }
+
+    if ( !( length = normalized.length ) ) {
+        return this;
+    }
+
+    var current, element, j, len, name, property, type, value,
+        change = jQuery.noop,
+        complete = jQuery.noop,
+        names = {};
+
+    options = options || {};
+    elements = getElementsByName( elements );
+
+    // Backwards compatible with old arguments: data, callback
+    if ( jQuery.isFunction( options ) ) {
+        complete = options;
+
+    } else {
+        change = jQuery.isFunction( options.change ) ? options.change : change;
+        complete = jQuery.isFunction( options.complete ) ? options.complete : complete;
+    }
+
+    for ( i = 0; i < length; i++ ) {
+        current = normalized[ i ];
+
+        name = current.name;
+        value = current.value;
+
+        if ( !( element = elements[ name ] ) ) {
+            continue;
+        }
+
+        type = ( len = element.length ) ? element[ 0 ] : element;
+        type = ( type.type || type.nodeName ).toLowerCase();
+
+        if ( rvalue.test( type ) ) {
+            if ( len ) {
+                j = names[ name ];
+                element = element[ names[ name ] = ( j == undefined ) ? 0 : ++j ];
+            }
+
+            change.call( element, ( element.value = value ) );
+
+        } else {
+            property = null;
+
+            if ( rcheck.test( type ) ) {
+                property = "checked";
+
+            } else if ( rselect.test( type ) ) {
+                property = "selected";
+            }
+
+            for ( j = 0; j < len; j++ ) {
+                current = element[ j ];
+
+                if ( current.value == value ) {
+                    change.call( current, ( current[ property ] = true ) && value );
+                }
+            }
+        }
+    }
+
+    complete.call( this );
+
+    return this;
+};
 
 })( jQuery );

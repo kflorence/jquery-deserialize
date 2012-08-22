@@ -1,4 +1,12 @@
-module("Core");
+var $elements, $form, $wrapper;
+
+module("Core", {
+    setup: function() {
+        $form = $("#form");
+        $wrapper = $("#qunit-fixture");
+        $elements = [$form, $wrapper.find(":input")];
+    }
+});
 
 test("Basic Requirements", function() {
     expect(2);
@@ -11,42 +19,39 @@ var str = "text=text+with+spaces&textarea=textarea&multtext=hi&multtext=hello&ra
     encodedStr = "text=" + encodeURIComponent( "Thyme &time=again" ),
     encodedFieldNameStr = encodeURIComponent( "textarray[]" ) + "=textarray";
 
-test("jQuery.deserialize(string)", function() {
+test("jQuery.deserialize({ data: string })", function() {
     expect(18);
 
-    var $elements = [$("#form"), $("#wrapper")],
-        form = $elements[0].get(0);
-
     $.each($elements, function(i, $element) {
-        form.reset();
+        $form.get(0).reset();
 
         $element.deserialize(str);
 
-        equals($element.find("[name=text]").val(), "text with spaces", "Serialized String: text with spaces");
-        equals($element.find("[name=textarea]").val(), "textarea", "Serialized String: textarea");
-        equals($element.find("[name=multtext]").map(function() {
+        equals($wrapper.find("[name=text]").val(), "text with spaces", "Serialized String[" + i + "]: text with spaces");
+        equals($wrapper.find("[name=textarea]").val(), "textarea", "Serialized String[" + i + "]: textarea");
+        equals($wrapper.find("[name=multtext]").map(function() {
             return this.value;
-        }).get().join(","), "hi,hello,howdy", "Serialized Array: multiple hidden");
-        equals($element.find("[name=radio]:checked").val(), "3", "Serialized String: radio");
-        equals($element.find("[name=checkbox]:checked").map(function() {
+        }).get().join(","), "hi,hello,howdy", "Serialized Array[" + i + "]: multiple hidden");
+        equals($wrapper.find("[name=radio]:checked").val(), "3", "Serialized String[" + i + "]: radio");
+        equals($wrapper.find("[name=checkbox]:checked").map(function() {
             return this.value;
-        }).get().join(","), "2,3", "Serialized String: checkbox");
-        equals($element.find("[name=select]").val(), "3", "Serialized String: select");
-        equals($element.find("[name=selectMultiple] > :selected").map(function() {
+        }).get().join(","), "2,3", "Serialized String[" + i + "]: checkbox");
+        equals($wrapper.find("[name=select]").val(), "3", "Serialized String[" + i + "]: select");
+        equals($wrapper.find("[name=selectMultiple] > :selected").map(function() {
             return this.value;
-        }).get().join(","), "2,3", "Serialized String: selectMultiple");
+        }).get().join(","), "2,3", "Serialized String[" + i + "]: selectMultiple");
 
-        form.reset();
+        $form.get(0).reset();
 
         $element.deserialize(encodedStr);
 
-        equals($element.find("[name=text]").val(), "Thyme &time=again", "Serialized, encoded String: Thyme &time=again");
+        equals($wrapper.find("[name=text]").val(), "Thyme &time=again", "Serialized, encoded String[" + i + "]: Thyme &time=again");
 
-        form.reset();
+        $form.get(0).reset();
 
         $element.deserialize(encodedFieldNameStr);
 
-        equals($element.find("input[name='textarray[]']").val(), "textarray", "Serialized, encoded fieldname: textarray[]");
+        equals($wrapper.find("input[name='textarray[]']").val(), "textarray", "Serialized, encoded fieldname[" + i + "]: textarray[]");
     });
 });
 
@@ -64,28 +69,28 @@ var arr = [
     { name: "multtext", value: "howdy" }
 ];
 
-test("jQuery.deserialize(array)", function() {
-    expect(7);
+test("jQuery.deserialize({ data: array })", function() {
+    expect(14);
 
-    var $form = $("#form"), form = $form.get(0);
+    $.each($elements, function(i, $element) {
+        $form.get(0).reset();
 
-    form.reset();
+        $element.deserialize(arr);
 
-    $form.deserialize(arr);
-
-    equals(form.text.value, "text", "Serialized Array: text");
-    equals(form.textarea.value, "textarea", "Serialized Array: textarea");
-    equals($form.find("[name=multtext]").map(function() {
-        return this.value;
-    }).get().join(","), "hi,hello,howdy", "Serialized Array: multiple hidden");
-    equals($form.find("[name=radio]:checked").val(), "3", "Serialized Array: radio");
-    equals($form.find("[name=checkbox]:checked").map(function() {
-        return this.value;
-    }).get().join(","), "2,3", "Serialized Array: checkbox");
-    equals($form.find("[name=select]").val(), "3", "Serialized Array: select");
-    equals($form.find("[name=selectMultiple] > :selected").map(function() {
-        return this.value;
-    }).get().join(","), "2,3", "Serialized Array: selectMultiple");
+        equals($wrapper.find("[name=text]").val(), "text", "Serialized Array[" + i + "]: text");
+        equals($wrapper.find("[name=textarea]").val(), "textarea", "Serialized Array[" + i + "]: textarea");
+        equals($wrapper.find("[name=multtext]").map(function() {
+            return this.value;
+        }).get().join(","), "hi,hello,howdy", "Serialized Array[" + i + "]: multiple hidden");
+        equals($wrapper.find("[name=radio]:checked").val(), "3", "Serialized Array[" + i + "]: radio");
+        equals($wrapper.find("[name=checkbox]:checked").map(function() {
+            return this.value;
+        }).get().join(","), "2,3", "Serialized Array[" + i + "]: checkbox");
+        equals($wrapper.find("[name=select]").val(), "3", "Serialized Array[" + i + "]: select");
+        equals($wrapper.find("[name=selectMultiple] > :selected").map(function() {
+            return this.value;
+        }).get().join(","), "2,3", "Serialized Array[" + i + "]: selectMultiple");
+    });
 });
 
 var obj = {
@@ -98,36 +103,49 @@ var obj = {
     selectMultiple: [2, 3]
 };
 
-test("jQuery.deserialize(object)", function() {
-    expect(7);
+test("jQuery.deserialize({ data: object })", function() {
+    expect(14);
 
-    var $form = $("#form"), form = $form.get(0);
+    $.each($elements, function(i, $element) {
+        $form.get(0).reset();
 
-    form.reset();
+        $element.deserialize(obj);
 
-    $form.deserialize(obj);
-
-    equals(form.text.value, "text", "Serialized Array: text");
-    equals(form.textarea.value, "textarea", "Serialized Array: textarea");
-    equals($form.find("[name=multtext]").map(function() {
-        return this.value;
-    }).get().join(","), "hi,hello,howdy", "Serialized Array: multiple hidden");
-    equals($form.find("[name=radio]:checked").val(), "3", "Serialized Array: radio");
-    equals($form.find("[name=checkbox]:checked").map(function() {
-        return this.value;
-    }).get().join(","), "2,3", "Serialized Array: checkbox");
-    equals($form.find("[name=select]").val(), "3", "Serialized Array: select");
-    equals($form.find("[name=selectMultiple] > :selected").map(function() {
-        return this.value;
-    }).get().join(","), "2,3", "Serialized Array: selectMultiple");
+        equals($wrapper.find("[name=text]").val(), "text", "Serialized Array[" + i + "]: text");
+        equals($wrapper.find("[name=textarea]").val(), "textarea", "Serialized Array[" + i + "]: textarea");
+        equals($wrapper.find("[name=multtext]").map(function() {
+            return this.value;
+        }).get().join(","), "hi,hello,howdy", "Serialized Array[" + i + "]: multiple hidden");
+        equals($wrapper.find("[name=radio]:checked").val(), "3", "Serialized Array[" + i + "]: radio");
+        equals($wrapper.find("[name=checkbox]:checked").map(function() {
+            return this.value;
+        }).get().join(","), "2,3", "Serialized Array[" + i + "]: checkbox");
+        equals($wrapper.find("[name=select]").val(), "3", "Serialized Array[" + i + "]: select");
+        equals($wrapper.find("[name=selectMultiple] > :selected").map(function() {
+            return this.value;
+        }).get().join(","), "2,3", "Serialized Array[" + i + "]: selectMultiple");
+    });
 });
 
-test("jQuery.deserialize(string, callback)", function() {
-    expect(1);
+test("jQuery.deserialize({ data: string, change: function, complete: function })", function() {
+    expect(4);
 
-    var $form = $("#form"), form = $form.get(0);
+    var inputCount,
+        changeCount = arr.length;
 
-    $form.deserialize("text=text", function() {
-        equals(form.text.value, "text", "Callback");
+    $.each($elements, function(i, $element) {
+        $form.get(0).reset();
+
+        changeCalledCount = 0;
+
+        $element.deserialize(arr, {
+            change: function() {
+                changeCalledCount++;
+            },
+            complete: function() {
+                equals(changeCount, changeCalledCount, "Callback[" + i + "]: change called for each element");
+                ok(true, "Callback[" + i + "]: complete called");
+            }
+        });
     });
 });
