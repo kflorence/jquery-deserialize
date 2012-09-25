@@ -15,12 +15,12 @@ test("Basic Requirements", function() {
     ok($, "$");
 });
 
-var str = "text=text+with+spaces&textarea=textarea&multtext=hi&multtext=hello&radio=3&checkbox=2&checkbox=3&select=3&selectMultiple=2&selectMultiple=3&multtext=howdy",
+var str = "text=text+with+spaces&textarea=textarea&multtext=hi&multtext=hello&radio=3&checkbox=2&checkbox=3&select=3&selectMultiple=2&selectMultiple=3&multtext=howdy&loneCheckbox=true",
     encodedStr = "text=" + encodeURIComponent( "Thyme &time=again" ),
     encodedFieldNameStr = encodeURIComponent( "textarray[]" ) + "=textarray";
 
 test("jQuery.deserialize({ data: string })", function() {
-    expect(18);
+    expect(20);
 
     $.each($elements, function(i, $element) {
         $form.get(0).reset();
@@ -36,6 +36,7 @@ test("jQuery.deserialize({ data: string })", function() {
         equals($wrapper.find("[name=checkbox]:checked").map(function() {
             return this.value;
         }).get().join(","), "2,3", "Serialized String[" + i + "]: checkbox");
+        equals($wrapper.find("[name=loneCheckbox]").attr("checked"), true, "Serialized String[" + i + "]: loneCheckbox");
         equals($wrapper.find("[name=select]").val(), "3", "Serialized String[" + i + "]: select");
         equals($wrapper.find("[name=selectMultiple] > :selected").map(function() {
             return this.value;
@@ -66,7 +67,8 @@ var arr = [
     { name: "select", value: 3 },
     { name: "selectMultiple", value: 2 },
     { name: "selectMultiple", value: 3 },
-    { name: "multtext", value: "howdy" }
+    { name: "multtext", value: "howdy" },
+    { name: "loneCheckbox", value: "true" }
 ];
 
 test("jQuery.deserialize({ data: array })", function() {
@@ -100,7 +102,8 @@ var obj = {
     radio: 3,
     checkbox: [2, 3],
     select: 3,
-    selectMultiple: [2, 3]
+    selectMultiple: [2, 3],
+    loneCheckbox: true
 };
 
 test("jQuery.deserialize({ data: object })", function() {

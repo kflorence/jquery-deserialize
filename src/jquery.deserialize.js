@@ -120,13 +120,20 @@ jQuery.fn.deserialize = function( data, options ) {
                 property = "selected";
             }
 
-            for ( j = 0; j < len; j++ ) {
-                current = element[ j ];
+			if ( !len ) {
+				var newProp = element.value == value;
+				if ( element[ property ] != newProp ){
+					change.call( element, element[ property ] = newProp && value );
+				}
+			} else {
+				for ( j = 0; j < len; j++ ) {
+					current = element[ j ];
 
-                if ( current.value == value ) {
-                    change.call( current, ( current[ property ] = true ) && value );
-                }
-            }
+					if ( current.value == value ) {
+						change.call( current, ( current[ property ] = true ) && value );
+					}
+				}
+			}
         }
     }
 
