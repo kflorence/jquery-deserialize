@@ -1,7 +1,7 @@
 /**
  * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.2.0
+ * @version 1.2.1
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
@@ -101,6 +101,7 @@ jQuery.fn.deserialize = function( data, options ) {
 
         type = ( len = element.length ) ? element[ 0 ] : element;
         type = ( type.type || type.nodeName ).toLowerCase();
+        property = null;
 
         if ( rvalue.test( type ) ) {
             if ( len ) {
@@ -110,30 +111,26 @@ jQuery.fn.deserialize = function( data, options ) {
 
             change.call( element, ( element.value = value ) );
 
-        } else {
-            property = null;
+        } else if ( rcheck.test( type ) ) {
+            property = "checked";
 
-            if ( rcheck.test( type ) ) {
-                property = "checked";
+        } else if ( rselect.test( type ) ) {
+            property = "selected";
+        }
 
-            } else if ( rselect.test( type ) ) {
-                property = "selected";
-            }
-
+        if ( property ) {
 			if ( !len ) {
-				var newProp = element.value == value;
-				if ( element[ property ] != newProp ){
-					change.call( element, element[ property ] = newProp && value );
-				}
-			} else {
-				for ( j = 0; j < len; j++ ) {
-					current = element[ j ];
-
-					if ( current.value == value ) {
-						change.call( current, ( current[ property ] = true ) && value );
-					}
-				}
+                element = [ element ];
+                len = 1;
 			}
+
+            for ( j = 0; j < len; j++ ) {
+                current = element[ j ];
+
+                if ( current.value == value ) {
+                    change.call( current, ( current[ property ] = true ) && value );
+                }
+            }
         }
     }
 
