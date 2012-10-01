@@ -119,10 +119,10 @@ jQuery.fn.deserialize = function( data, options ) {
         }
 
         if ( property ) {
-			if ( !len ) {
+            if ( !len ) {
                 element = [ element ];
                 len = 1;
-			}
+            }
 
             for ( j = 0; j < len; j++ ) {
                 current = element[ j ];
