@@ -1,6 +1,6 @@
 {
     "name": "jquery.deserialize",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "title": "jQuery.deserialize()",
     "author": {
         "name": "Kyle Florence",
@@ -26,9 +26,9 @@
         "deserialize",
         "data"
     ],
-	"demo": "http://kflorence.github.com/jquery-deserialize/",
+    "demo": "http://kflorence.github.com/jquery-deserialize/",
     "homepage": "https://github.com/kflorence/jquery-deserialize",
     "files": [
-		"dist/jquery.deserialize.min.js"
+        "dist/jquery.deserialize.min.js"
     ]
 }
