@@ -4,6 +4,7 @@
     <title>jQuery.deserialize Unit Tests</title>
     <link rel="stylesheet" type="text/css" href="../external/qunit/qunit.css" />
     <script type="text/javascript" src="../external/jquery/jquery-1.4.3.min.js"></script>
+    <script type="text/javascript" src="../external/jquery/jquery.ba-serializeobject.js"></script>
     <script type="text/javascript" src="../src/jquery.deserialize.js"></script>
 
     <script type="text/javascript" src="../external/qunit/qunit.js"></script>
@@ -22,49 +23,53 @@
         <ol class="example">
           <li>
             <h4>Text</h4>
-            <input name="text" type="text" value="" />
-            <input name="textarray[]" type="text" value="" />
-            <input name="multtext" type="hidden" value="" />
-            <input name="multtext" type="hidden" value="" />
+            <input name="text" type="text" value="Thyme &time=again" />
+            <input name="textarray[]" type="text" value="textarray" />
+            <input name="multtext" type="hidden" value="hi" />
+            <input name="multtext" type="hidden" value="hello" />
           </li>
           <li>
             <h4>Textarea</h4>
-            <textarea name="textarea"></textarea>
+            <textarea name="textarea">textarea</textarea>
           </li>
           <li>
             <h4>Radio Group</h4>
             <span class="group">
               <label class="radio"><input name="radio" type="radio" value="1" />1</label>
-              <label class="radio"><input name="radio" type="radio" value="2" />2</label>
-              <label class="radio"><input name="radio" type="radio" value="3" />3</label>
+              <label class="radio"><input name="radio" type="radio" value="2" checked="checked" />2</label>
+              <label class="radio"><input name="radio" type="radio" value="3" checked="checked" />3</label>
             </span>
+          </li>
+          <li>
+            <h4>Lone Checkbox</h4>
+            <label class="checkbox"><input name="loneCheckbox" type="checkbox" value="true"/>true</label>
           </li>
           <li>
             <h4>Checkbox Group</h4>
             <span class="group">
-              <label class="checkbox"><input name="checkbox" type="checkbox" value="1" />1</label>
+              <label class="checkbox"><input name="checkbox" type="checkbox" value="1" checked="checked" />1</label>
               <label class="checkbox"><input name="checkbox" type="checkbox" value="2" />2</label>
-              <label class="checkbox"><input name="checkbox" type="checkbox" value="3" />3</label>
+              <label class="checkbox"><input name="checkbox" type="checkbox" value="3" checked="checked" />3</label>
             </span>
           </li>
           <li>
             <h4>Select List</h4>
             <select name="select">
               <option value="1">1</option>
-              <option value="2">2</option>
+              <option value="2" selected="selected">2</option>
               <option value="3">3</option>
             </select>
           </li>
           <li>
             <h4>Multiple Select List</h4>
             <select name="selectMultiple" multiple="multiple">
-              <option value="1">1</option>
-              <option value="2">2</option>
+              <option value="1" selected="selected">1</option>
+              <option value="2" selected="selected">2</option>
               <option value="3">3</option>
             </select>
           </li>
         </ol>
-        <input name="multtext" type="hidden" value="" />
+        <input name="multtext" type="hidden" value="howdy" />
       </form>
     </div>
   </body>
