@@ -16,7 +16,7 @@ var push = Array.prototype.push,
 function getElements( elements ) {
     return elements.map(function() {
             return this.elements ? jQuery.makeArray( this.elements ) : this;
-        }).filter( ":input" ).get();
+        }).filter( ":input:not(:disabled)" ).get();
 }
 
 function getElementsByName( elements ) {
