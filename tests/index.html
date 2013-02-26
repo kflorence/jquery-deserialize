@@ -72,6 +72,50 @@
         </ol>
         <input name="multtext" type="hidden" value="howdy" />
       </form>
+
+      <!-- Individual Use Cases -->
+      <form action="" data-test-url="year=2012">
+        <input type="checkbox" title="checkbox for year 2012" name="year" value="2012" checked data-expected-checked="true">
+        <input type="checkbox" title="checkbox for year 2013" name="year" value="2013" checked data-expected-checked="false">
+        <input type="checkbox" title="checkbox for year 2161" name="year" value="2161" data-expected-checked="false">
+      </form>
+
+      <form action="" data-test-url="year=2012&amp;year=2014">
+        <input type="checkbox" title="checkbox for year 2012" name="year" value="2012" checked data-expected-checked="true">
+        <input type="checkbox" title="checkbox for year 2013" name="year" value="2013" checked data-expected-checked="false">
+        <input type="checkbox" title="checkbox for year 2014" name="year" value="2014" checked data-expected-checked="true">
+        <input type="checkbox" title="checkbox for year 2161" name="year" value="2161" data-expected-checked="false">
+      </form>
+
+      <form action="" data-test-url="name=joe">
+        <input type="text" title="text box for name" name="name" value="william" data-expected-value="joe">
+        <input type="text" title="text box for email" name="email" value="example@example.com" data-expected-value="">
+        <input type="text" title="text box for food" name="food" data-expected-value="">
+      </form>
+
+      <form action="" data-test-url="province=Saskatchewan">
+        <input type="text" title="text box for name" name="name" value="william" data-expected-value="">
+        <input type="text" title="text box for email" name="email" value="example@example.com" data-expected-value="">
+        <input type="text" title="text box for food" name="food" data-expected-value="">
+      </form>
+
+      <form action="" data-test-url="fruit=bananas&amp;fruit=kiwis">
+        <select name="fruit" multiple>
+          <option value="apples" selected data-expected-selected="false">Apples</option>
+          <option value="bananas" selected data-expected-selected="true">Bananas</option>
+          <option value="kiwis" data-expected-selected="true">Kiwis</option>
+          <option value="oranges" data-expected-selected="false">Oranges</option>
+        </select>
+      </form>
+
+      <form action="/something/something/" method="POST" data-test-url="agree=on">
+        <label>
+          <input type="checkbox" title="checkbox in a label" name="agree" data-expected-checked="true"> I agree
+        </label>
+        <input type="submit" value="GO" data-expected-value="GO">
+        <input type="reset" value="UN-GO" data-expected-value="UN-GO">
+      </form>
+
     </div>
   </body>
 </html>
