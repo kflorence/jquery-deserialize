@@ -108,6 +108,14 @@
         </select>
       </form>
 
+      <form action="/something/something/" method="POST" data-test-url="agree=on">
+        <label>
+          <input type="checkbox" title="checkbox in a label" name="agree" data-expected-checked="true"> I agree
+        </label>
+        <input type="submit" value="GO" data-expected-value="GO">
+        <input type="reset" value="UN-GO" data-expected-value="UN-GO">
+      </form>
+
     </div>
   </body>
 </html>

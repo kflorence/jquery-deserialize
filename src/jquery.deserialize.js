@@ -16,7 +16,7 @@ var rcheck = /^(?:radio|checkbox)$/i,
 function getElements( elements ) {
     return elements.map(function() {
             return this.elements ? jQuery.makeArray( this.elements ) : this;
-        }).filter( ":input:not(:disabled)" ).get();
+        }).filter( "[name]:input:not(:disabled)" ).get();
 }
 
 // Flip an array to a map of arrays based on 'name'. Optionally pluck 'value'.
