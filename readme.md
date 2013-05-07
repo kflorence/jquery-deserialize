@@ -1,4 +1,3 @@
-
 # jQuery.deserialize [#8980](http://bugs.jquery.com/ticket/8980)
 
     $("form").deserialize(data[, options]);
@@ -8,6 +7,16 @@ Decodes serialized form data and populates the form with that data. This method 
 * [jQuery.serialize()](http://api.jquery.com/serialize)
 * [jQuery.serializeArray()](http://api.jquery.com/serializeArray)
 * [jQuery.serializeObject()](http://benalman.com/projects/jquery-misc-plugins/#serializeobject) (unofficial)
+
+### Example
+
+Populate a form on page load using query string parameters:
+
+```javascript
+jQuery(function( $ ) {
+    $( 'form' ).deserialize( location.search.substr( 1 ) );
+});
+```
 
 ## Arguments
 
