@@ -35,5 +35,5 @@ jQuery.deserialize requires:
 
 ## License
 
-Copyright (c) 2012 Kyle Florence
+Copyright (c) 2012 Kyle Florence  
 jQuery.deserialize is dual licensed under MIT and GPLv2 licenses.
