@@ -62,7 +62,7 @@ jQuery.fn.deserialize = function( data, options ) {
         for ( i = 0, length = data.length; i < length; i++ ) {
             parts =  data[ i ].split( "=" );
             push.call( normalized, {
-                name: decodeURIComponent( parts[ 0 ] ),
+                name: decodeURIComponent( parts[ 0 ].replace( rplus, "%20" ) ),
                 value: decodeURIComponent( parts[ 1 ].replace( rplus, "%20" ) )
             });
         }
