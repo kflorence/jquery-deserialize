@@ -25,7 +25,7 @@ function getElementsByName( elements ) {
 
     jQuery.each( elements, function( i, element ) {
         current = elementsByName[ element.name ];
-        elementsByName[ element.name ] = current === undefined ? element :
+        elementsByName[ element.name ] = typeof current === "undefined" ? element :
             ( jQuery.isArray( current ) ? current.concat( element ) : [ current, element ] );
     });
 
