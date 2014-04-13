@@ -6,7 +6,10 @@
     "Kyle Florence <kyle.florence@gmail.com>"
   ],
   "description": "Decodes serialized form data and populates a form with that data.",
-  "main": "dist/jquery.deserialize.min.js src/jquery.deserialize.js",
+  "main": [
+    "dist/jquery.deserialize.min.js",
+    "src/jquery.deserialize.js"
+  ],
   "keywords": [
     "javascript",
     "form",
