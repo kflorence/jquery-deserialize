@@ -103,6 +103,12 @@ jQuery.fn.deserialize = function( data, options ) {
         type = ( type.type || type.nodeName ).toLowerCase();
         property = null;
 
+        // Exception for CakePHP framework
+        if ( type == "hidden" && element.length == 2 && element[ 1 ].type == "checkbox" && element[ 0 ].id == element[ 1 ].id + '_') {
+            // The hidden element should be unchanged
+            type = "checkbox";
+        }
+
         if ( rvalue.test( type ) ) {
             if ( len ) {
                 j = names[ name ];
