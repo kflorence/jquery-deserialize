@@ -25,8 +25,10 @@ function getElementsByName( elements ) {
 
     jQuery.each( elements, function( i, element ) {
         current = elementsByName[ element.name ];
-        elementsByName[ element.name ] = current === undefined ? element :
-            ( jQuery.isArray( current ) ? current.concat( element ) : [ current, element ] );
+        if ( current === undefined ) {
+            elementsByName[ element.name ] = [];
+        }
+        elementsByName[ element.name ].push( element );
     });
 
     return elementsByName;
@@ -73,6 +75,7 @@ jQuery.fn.deserialize = function( data, options ) {
     }
 
     var current, element, j, len, name, property, type, value,
+        elementsForName, k, nameIndex, optionsAndInputs,
         change = jQuery.noop,
         complete = jQuery.noop,
         names = {};
@@ -95,40 +98,65 @@ jQuery.fn.deserialize = function( data, options ) {
         name = current.name;
         value = current.value;
 
-        if ( !( element = elements[ name ] ) ) {
+        elementsForName = elements[ name ];
+        if ( !elementsForName || elementsForName.length === 0 ) {
             continue;
         }
 
-        type = ( len = element.length ) ? element[ 0 ] : element;
-        type = ( type.type || type.nodeName ).toLowerCase();
-        property = null;
+        // Keep track of parameters that are named the same for array handling.
+        if ( names[ name ] === undefined ) {
+            names[ name ] = 0;
+        }
+        nameIndex = names[ name ]++;
 
-        if ( rvalue.test( type ) ) {
-            if ( len ) {
-                j = names[ name ];
-                element = element[ names[ name ] = ( j == undefined ) ? 0 : ++j ];
+        // Handle the simple case of inputs that take a simple value.
+        //
+        // Possible arrays are handled by fetching the element that corresponds
+        // to the index of the current name.
+        if ( elementsForName[ nameIndex ] ) {
+            element = elementsForName[ nameIndex ];
+            type = ( element.type || element.nodeName ).toLowerCase();
+            if ( rvalue.test( type ) ) {
+                change.call( element, ( element.value = value ) );
+
+                // Skip further processing for this simple case.
+                continue;
             }
-
-            change.call( element, ( element.value = value ) );
-
-        } else if ( rcheck.test( type ) ) {
-            property = "checked";
-
-        } else if ( rselect.test( type ) ) {
-            property = "selected";
         }
 
-        if ( property ) {
-            if ( !len ) {
-                element = [ element ];
-                len = 1;
+        // Handle more complex cases involving select menus, checkboxes, or radios.
+        for ( j = 0, len = elementsForName.length; j < len; j++) {
+            element = elementsForName[ j ];
+            type = ( element.type || element.nodeName ).toLowerCase();
+            property = null;
+
+            if ( rcheck.test( type ) ) {
+                property = "checked";
+
+            } else if ( rselect.test( type ) ) {
+                property = "selected";
+
             }
 
-            for ( j = 0; j < len; j++ ) {
-                current = element[ j ];
+            if ( property ) {
+                // Flatten all of the inputs (radios & checkboxes) and options
+                // (under select menus), so all of them can be treated in a
+                // standard way.
+                optionsAndInputs = [];
+                if ( element.options ) {
+                    for ( k = 0; k < element.options.length; k++ ) {
+                        optionsAndInputs.push( element.options[ k ] );
+                    }
 
-                if ( current.value == value ) {
-                    change.call( current, ( current[ property ] = true ) && value );
+                } else {
+                    optionsAndInputs.push(element);
+                }
+
+                for ( k = 0; k < optionsAndInputs.length; k++ ) {
+                    current = optionsAndInputs[ k ];
+                    if ( current.value == value ) {
+                        change.call( current, ( current[ property ] = true ) && value );
+                    }
                 }
             }
         }

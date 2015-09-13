@@ -69,6 +69,93 @@
               <option value="3">3</option>
             </select>
           </li>
+          <li>
+            <h4>Multiple Select Lists With Same Name</h4>
+            <select name="selectMultipleDuplicate" multiple="multiple">
+              <option value="1" selected="selected">1</option>
+              <option value="2" selected="selected">2</option>
+              <option value="3">3</option>
+            </select>
+            <select name="selectMultipleDuplicate" multiple="multiple">
+              <option value="4">4</option>
+              <option value="5" selected="selected">5</option>
+            </select>
+          </li>
+          <li>
+            <h4>Lone Checkbox With Hidden Default (checked)</h4>
+            <input name="loneCheckboxWithHiddenChecked" type="hidden" value="false" />
+            <label class="checkbox"><input name="loneCheckboxWithHiddenChecked" type="checkbox" value="true" checked="checked" />true</label>
+          </li>
+          <li>
+            <h4>Lone Checkbox With Hidden Default (unchecked)</h4>
+            <input name="loneCheckboxWithHiddenUnchecked" type="hidden" value="false" />
+            <label class="checkbox"><input name="loneCheckboxWithHiddenUnchecked" type="checkbox" value="true" />true</label>
+          </li>
+          <li>
+            <h4>Checkbox Group With Hidden Default (checked)</h4>
+            <span class="group">
+              <input name="checkboxGroupWithHiddenChecked" type="hidden" value="false" />
+              <label class="checkbox"><input name="checkboxGroupWithHiddenChecked" type="checkbox" value="1" checked="checked" />1</label>
+              <label class="checkbox"><input name="checkboxGroupWithHiddenChecked" type="checkbox" value="2" />2</label>
+              <label class="checkbox"><input name="checkboxGroupWithHiddenChecked" type="checkbox" value="3" checked="checked" />3</label>
+            </span>
+          </li>
+          <li>
+            <h4>Checkbox Group With Hidden Default (unchecked)</h4>
+            <span class="group">
+              <input name="checkboxGroupWithHiddenUnchecked" type="hidden" value="false" />
+              <label class="checkbox"><input name="checkboxGroupWithHiddenUnchecked" type="checkbox" value="1" />1</label>
+              <label class="checkbox"><input name="checkboxGroupWithHiddenUnchecked" type="checkbox" value="2" />2</label>
+              <label class="checkbox"><input name="checkboxGroupWithHiddenUnchecked" type="checkbox" value="3" />3</label>
+            </span>
+          </li>
+          <li>
+            <h4>Multiple Select List With Hidden Default (with selections)</h4>
+            <input name="selectMultipleWithHiddenWithSelections" type="hidden" value="false" />
+            <select name="selectMultipleWithHiddenWithSelections" multiple="multiple">
+              <option value="1" selected="selected">1</option>
+              <option value="2" selected="selected">2</option>
+              <option value="3">3</option>
+            </select>
+          </li>
+          <li>
+            <h4>Multiple Select List With Hidden Default (no selections)</h4>
+            <input name="selectMultipleWithHiddenNoSelections" type="hidden" value="false" />
+            <select name="selectMultipleWithHiddenNoSelections" multiple="multiple">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </li>
+          <li>
+            <h4>Multiple Select List With Checkbox After</h4>
+            <select name="selectMultipleWithCheckboxAfter" multiple="multiple">
+              <option value="1" selected="selected">1</option>
+              <option value="2" selected="selected">2</option>
+              <option value="3">3</option>
+            </select>
+            <input name="selectMultipleWithCheckboxAfter" type="checkbox" value="4" checked="checked" />
+          </li>
+          <li>
+            <h4>Multiple Select List With Checkboxes Before and After</h4>
+            <input name="selectMultipleWithCheckboxesSurrounding" type="checkbox" value="0" checked="checked" />
+            <select name="selectMultipleWithCheckboxesSurrounding" multiple="multiple">
+              <option value="1" selected="selected">1</option>
+              <option value="2" selected="selected">2</option>
+              <option value="3">3</option>
+            </select>
+            <input name="selectMultipleWithCheckboxesSurrounding" type="checkbox" value="4" checked="checked" />
+          </li>
+          <li>
+            <h4>Multiple Select List With Checkboxes Before and After</h4>
+            <input name="selectMultipleWithHiddenAndCheckbox" type="hidden" value="false" />
+            <select name="selectMultipleWithHiddenAndCheckbox" multiple="multiple">
+              <option value="1">1</option>
+              <option value="2" selected="selected">2</option>
+              <option value="3">3</option>
+            </select>
+            <input name="selectMultipleWithHiddenAndCheckbox" type="checkbox" value="4" />
+          </li>
         </ol>
         <input name="multtext" type="hidden" value="howdy" />
       </form>
