@@ -29,15 +29,22 @@ $.each( [ "serialize", "serializeArray", "serializeObject" ], function( i, seria
             var changeCalledCount = 0,
                 data = $form[ serializeMethod ]();
 
-            $form.get( 0 ).reset();
+            // Completely clear the form of any values to ensure deserialize
+            // repopulates the form (this differs from a form.reset(), since
+            // reset only resets back to the default state from initial page
+            // load).
+            $form.not(':button, :submit, :reset, :hidden, :checkbox, :radio, select, option').val('');
+            $(':checkbox, :radio').removeAttr('checked');
+            $('select').attr('selectedIndex', -1);
+            $('option:selected').removeAttr('selected');
 
             $form.deserialize( data, {
                 change: function() {
                     changeCalledCount++;
                 },
                 complete: function() {
-                    deepEqual( data, $form[ serializeMethod ](), "Serialized data matches deserialized data (element #" + elementIndex + ")" );
-                    equal( changeCount, changeCalledCount, "Change called for each changed input (element #" + elementIndex + ")" );
+                    deepEqual( $form[ serializeMethod ](), data, "Serialized data matches deserialized data (element #" + elementIndex + ")" );
+                    equal( changeCalledCount, changeCount, "Change called for each changed input (element #" + elementIndex + ")" );
                 }
             });
         });
