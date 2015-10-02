@@ -31,9 +31,9 @@ The plugin accepts two arguments: _data_ and _options_, the latter being optiona
 
 jQuery.deserialize requires:
 
-* jQuery version 1.4.3+ ([A patch is available](https://github.com/kflorence/misc-js/raw/master/jquery/patches/jquery.type-patch.js) for versions 1.2+).
+* jQuery version 1.4.3+
 
 ## License
 
-Copyright (c) 2012 Kyle Florence  
+Copyright (c) 2015 Kyle Florence  
 jQuery.deserialize is dual licensed under MIT and GPLv2 licenses.

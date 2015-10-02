@@ -1,34 +1,44 @@
 {
-    "name": "jquery.deserialize",
-    "version": "1.3.1",
-    "title": "jQuery.deserialize()",
-    "author": {
-        "name": "Kyle Florence",
-        "url": "https://github.com/kflorence/"
+  "name": "jquery.deserialize",
+  "version": "1.3.2",
+  "title": "jQuery.deserialize()",
+  "author": {
+    "name": "Kyle Florence",
+    "url": "https://github.com/kflorence/"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/kflorence/jquery-deserialize/master/license-mit"
     },
-    "licenses": [
-        {
-            "type": "MIT",
-            "url": "https://raw.github.com/kflorence/jquery-deserialize/master/license-mit"
-        },
-        {
-            "type": "GPL-2.0",
-            "url": "https://raw.github.com/kflorence/jquery-deserialize/master/license-gpl"
-        }
-    ],
-    "dependencies": {
-        "jquery": ">=1.4.3"
-    },
-    "description": "Decodes serialized form data and populates the form with that data.",
-    "keywords": [
-        "form",
-        "populate",
-        "deserialize",
-        "data"
-    ],
-    "demo": "http://kflorence.github.com/jquery-deserialize/",
-    "homepage": "https://github.com/kflorence/jquery-deserialize",
-    "files": [
-        "src/jquery.deserialize.js"
-    ]
+    {
+      "type": "GPL-2.0",
+      "url": "https://raw.github.com/kflorence/jquery-deserialize/master/license-gpl"
+    }
+  ],
+  "dependencies": {
+    "jquery": ">=1.4.3"
+  },
+  "description": "Decodes serialized form data and populates the form with that data.",
+  "keywords": [
+    "form",
+    "populate",
+    "deserialize",
+    "data"
+  ],
+  "homepage": "https://github.com/kflorence/jquery-deserialize",
+  "files": [
+    "src/jquery.deserialize.js"
+  ],
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-qunit": "^1.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kflorence/jquery-deserialize.git"
+  },
+  "scripts": {
+    "test": "gulp test"
+  }
 }
