@@ -1,4 +1,4 @@
-# jQuery.deserialize [#8980](http://bugs.jquery.com/ticket/8980)
+# jQuery.deserialize
 
     $("form").deserialize(data[, options]);
 
