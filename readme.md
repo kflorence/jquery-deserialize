@@ -1,4 +1,4 @@
-# jQuery.deserialize [#8980](http://bugs.jquery.com/ticket/8980)
+# jQuery.deserialize
 
     $("form").deserialize(data[, options]);
 
@@ -35,5 +35,5 @@ jQuery.deserialize requires:
 
 ## License
 
-Copyright (c) 2012 Kyle Florence  
+Copyright (c) 2015 Kyle Florence  
 jQuery.deserialize is dual licensed under MIT and GPLv2 licenses.
