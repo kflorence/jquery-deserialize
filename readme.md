@@ -8,7 +8,17 @@ Decodes serialized form data and populates the form with that data. This method 
 * [jQuery.serializeArray()](http://api.jquery.com/serializeArray)
 * [jQuery.serializeObject()](http://benalman.com/projects/jquery-misc-plugins/#serializeobject) (unofficial)
 
-### Example
+## Install
+
+Download as [NPM](http://npmjs.org) module:
+
+    npm install jquery-deserialize
+
+Download as [Bower](http://bower.io) component:
+
+    bower install jquery-deserialize
+
+## Example
 
 Populate a form on page load using query string parameters:
 
