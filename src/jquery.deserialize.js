@@ -1,7 +1,22 @@
 /**
- * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
+ * Copyright (C) 2017 Kyle Florence
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.3.4
+ * @version 1.3.5
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
@@ -13,10 +28,10 @@ var push = Array.prototype.push,
     rselect = /^(?:option|select-one|select-multiple)$/i,
     rvalue = /^(?:button|color|date|datetime|datetime-local|email|hidden|month|number|password|range|reset|search|submit|tel|text|textarea|time|url|week)$/i;
 
-function getElements( elements ) {
+function getElements( elements, filter ) {
     return elements.map(function() {
             return this.elements ? jQuery.makeArray( this.elements ) : this;
-        }).filter( ":input:not(:disabled)" ).get();
+        }).filter( filter || ":input:not(:disabled)" ).get();
 }
 
 function getElementsByName( elements ) {
@@ -35,9 +50,25 @@ function getElementsByName( elements ) {
 }
 
 jQuery.fn.deserialize = function( data, options ) {
-    var i, length,
-        elements = getElements( this ),
+    var current, element, elements, elementsForName, i, j, k, key, len, length, name, nameIndex, optionsAndInputs,
+		property, type, value,
+		change = jQuery.noop,
+		complete = jQuery.noop,
+		names = {},
         normalized = [];
+
+	options = options || {};
+
+	// Backwards compatible with old arguments: data, callback
+	if ( jQuery.isFunction( options ) ) {
+		complete = options;
+
+	} else {
+		change = jQuery.isFunction( options.change ) ? options.change : change;
+		complete = jQuery.isFunction( options.complete ) ? options.complete : complete;
+	}
+
+	elements = getElements( this, options.filter );
 
     if ( !data || !elements.length ) {
         return this;
@@ -47,8 +78,6 @@ jQuery.fn.deserialize = function( data, options ) {
         normalized = data;
 
     } else if ( jQuery.isPlainObject( data ) ) {
-        var key, value;
-
         for ( key in data ) {
             jQuery.isArray( value = data[ key ] ) ?
                 push.apply( normalized, jQuery.map( value, function( v ) {
@@ -74,23 +103,7 @@ jQuery.fn.deserialize = function( data, options ) {
         return this;
     }
 
-    var current, element, j, len, name, property, type, value,
-        elementsForName, k, nameIndex, optionsAndInputs,
-        change = jQuery.noop,
-        complete = jQuery.noop,
-        names = {};
-
-    options = options || {};
     elements = getElementsByName( elements );
-
-    // Backwards compatible with old arguments: data, callback
-    if ( jQuery.isFunction( options ) ) {
-        complete = options;
-
-    } else {
-        change = jQuery.isFunction( options.change ) ? options.change : change;
-        complete = jQuery.isFunction( options.complete ) ? options.complete : complete;
-    }
 
     for ( i = 0; i < length; i++ ) {
         current = normalized[ i ];
