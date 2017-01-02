@@ -36,6 +36,7 @@ The plugin accepts two arguments: _data_ and _options_, the latter being optiona
 * **options** _Object_ An object of key/value pairs that configure the plugin.
     *    **change** _Function_ Called for every changed input value.
     *    **complete** _Function_ Called when all of the inputs have been updated.
+	*    **filter** _String|Function|Element|jQuery_ A custom filter to identify inputs to deserialize. By default, all inputs that are not disabled will be deserialized (this matches the behavior of serialization).
 
 ## Requirements
 
