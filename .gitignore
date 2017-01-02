@@ -1,0 +1,11 @@
+*~
+.*
+!.editorconfig
+!.gitignore
+*.sublime*
+*.swp
+*.log
+
+bower_components/
+node_modules/
+vendor/
