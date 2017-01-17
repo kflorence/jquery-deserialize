@@ -20,7 +20,15 @@
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
-(function( jQuery, undefined ) {
+(function ( factory ) {
+    if ( typeof module === 'object' && module.exports ) {
+        // Node/CommonJS
+        module.exports = factory( require( 'jquery' ) );
+    } else {
+        // Browser globals
+        factory( window.jQuery );
+    }
+} (function( jQuery ) {
 
 var push = Array.prototype.push,
     rcheck = /^(?:radio|checkbox)$/i,
@@ -180,4 +188,4 @@ jQuery.fn.deserialize = function( data, options ) {
     return this;
 };
 
-})( jQuery );
+}));
