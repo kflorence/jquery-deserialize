@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.3.5
+ * @version 1.3.6
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
