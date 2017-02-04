@@ -183,6 +183,12 @@ jQuery.fn.deserialize = function( data, options ) {
         }
     }
 
+    //If the jQuery Uniform UI library is being used, then update those custom UI controls 
+    //based on the state of the underlying native form controls we've just updated
+    if (window.jQuery && jQuery.uniform) {
+        jQuery.uniform.update();
+    }
+    
     complete.call( this );
 
     return this;
