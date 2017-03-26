@@ -1,142 +1,276 @@
 /**
- * @author Kyle Florence <kyle[dot]florence[at]gmail[dot]com>
+ * Copyright (C) 2017 Kyle Florence
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
  * @website https://github.com/kflorence/jquery-deserialize/
- * @version 1.2.1
+ * @version 2.0.0-rc1
  *
  * Dual licensed under the MIT and GPLv2 licenses.
  */
-(function( jQuery, undefined ) {
+(function( factory ) {
+  if ( typeof module === "object" && module.exports ) {
+    // Node/CommonJS
+    module.exports = factory( require( "jquery" ) );
 
-var push = Array.prototype.push,
-    rcheck = /^(?:radio|checkbox)$/i,
-    rplus = /\+/g,
-    rselect = /^(?:option|select-one|select-multiple)$/i,
-    rvalue = /^(?:button|color|date|datetime|datetime-local|email|hidden|month|number|password|range|reset|search|submit|tel|text|textarea|time|url|week)$/i;
+  } else {
+    // Browser globals
+    factory( window.jQuery );
+  }
+}(function( $ ) {
 
-function getElements( elements ) {
-    return elements.map(function() {
-            return this.elements ? jQuery.makeArray( this.elements ) : this;
-        }).filter( ":input" ).get();
-}
+  /**
+   * Updates a key/valueArray with the given property and value. Values will always be stored as arrays.
+   *
+   * @param prop The property to add the value to.
+   * @param value The value to add.
+   * @param obj The object to update.
+   * @returns {object} Updated object.
+   */
+  function updateKeyValueArray( prop, value, obj ) {
+    var current = obj[ prop ];
 
-function getElementsByName( elements ) {
-    var current,
-        elementsByName = {};
+    if ( current === undefined ) {
+      obj[ prop ] = [ value ];
 
-    jQuery.each( elements, function( i, element ) {
-        current = elementsByName[ element.name ];
-        elementsByName[ element.name ] = current === undefined ? element :
-            ( jQuery.isArray( current ) ? current.concat( element ) : [ current, element ] );
+    } else {
+      current.push( value );
+    }
+
+    return obj;
+  }
+
+  /**
+   * Get all of the fields contained within the given elements by name.
+   *
+   * @param $elements jQuery object of elements.
+   * @param filter Custom filter to apply to the list of fields.
+   * @returns {object} All of the fields contained within the given elements, keyed by name.
+   */
+  function getFieldsByName( $elements, filter ) {
+    var elementsByName = {};
+
+    // Extract fields from elements
+    var fields = $elements
+      .map(function convertFormToElements() {
+        return this.elements ? $.makeArray( this.elements ) : this;
+      })
+      .filter( filter || ":input:not(:disabled)" )
+      .get();
+
+    $.each( fields, function( index, field ) {
+      updateKeyValueArray( field.name, field, elementsByName );
     });
 
     return elementsByName;
-}
+  }
 
-jQuery.fn.deserialize = function( data, options ) {
-    var i, length,
-        elements = getElements( this ),
-        normalized = [];
+  /**
+   * Figure out the type of an element. Input type will be used first, falling back to nodeName.
+   *
+   * @param element DOM element to check type of.
+   * @returns {string} The element's type.
+   */
+  function getElementType( element ) {
+    return ( element.type || element.nodeName ).toLowerCase();
+  }
 
-    if ( !data || !elements.length ) {
-        return this;
-    }
+  /**
+   * Normalize the provided data into a key/valueArray store.
+   *
+   * @param data The data provided by the user to the plugin.
+   * @returns {object} The data normalized into a key/valueArray store.
+   */
+  function normalizeData( data ) {
+    var normalized = {};
+    var rPlus = /\+/g;
 
-    if ( jQuery.isArray( data ) ) {
-        normalized = data;
+    // Convert data from .serializeObject() notation
+    if ( $.isPlainObject( data ) ) {
+      $.extend( normalized, data );
 
-    } else if ( jQuery.isPlainObject( data ) ) {
-        var key, value;
-
-        for ( key in data ) {
-            jQuery.isArray( value = data[ key ] ) ?
-                push.apply( normalized, jQuery.map( value, function( v ) {
-                    return { name: key, value: v };
-                })) : push.call( normalized, { name: key, value: value } );
+      // Convert non-array values into an array
+      $.each( normalized, function( name, value ) {
+        if ( !$.isArray( value ) ) {
+          normalized[ name ] = [ value ];
         }
+      });
 
+    // Convert data from .serializeArray() notation
+    } else if ( $.isArray( data ) ) {
+      $.each( data, function( index, field ) {
+        updateKeyValueArray( field.name, field.value, normalized );
+      });
+
+    // Convert data from .serialize() notation
     } else if ( typeof data === "string" ) {
-        var parts;
+      $.each( data.split( "&" ), function( index, field ) {
+        var current = field.split( "=" );
+        var name = decodeURIComponent( current[ 0 ].replace( rPlus, "%20" ) );
+        var value = decodeURIComponent( current[ 1 ].replace( rPlus, "%20" ) );
+        updateKeyValueArray( name, value, normalized );
+      });
+    }
 
-        data = data.split( "&" );
+    return normalized;
+  }
 
-        for ( i = 0, length = data.length; i < length; i++ ) {
-            parts =  data[ i ].split( "=" );
-            push.call( normalized, {
-                name: decodeURIComponent( parts[ 0 ] ),
-                value: decodeURIComponent( parts[ 1 ].replace( rplus, "%20" ) )
-            });
+  /**
+   * Map of property name -> element types.
+   *
+   * @type {object}
+   */
+  var updateTypes = {
+    checked: [
+      "radio",
+      "checkbox"
+    ],
+    selected: [
+      "option",
+      "select-one",
+      "select-multiple"
+    ],
+    value: [
+      "button",
+      "color",
+      "date",
+      "datetime",
+      "datetime-local",
+      "email",
+      "hidden",
+      "month",
+      "number",
+      "password",
+      "range",
+      "reset",
+      "search",
+      "submit",
+      "tel",
+      "text",
+      "textarea",
+      "time",
+      "url",
+      "week"
+    ]
+  };
+
+  /**
+   * Get the property to update on an element being updated.
+   *
+   * @param element The DOM element to get the property for.
+   * @returns The name of the property to update if element is supported, otherwise `undefined`.
+   */
+  function getPropertyToUpdate( element ) {
+    var type = getElementType( element );
+    var elementProperty = undefined;
+
+    $.each( updateTypes, function( property, types ) {
+      if ( $.inArray( type, types ) > -1 ) {
+        elementProperty = property;
+        return false;
+      }
+    });
+
+    return elementProperty;
+  }
+
+  /**
+   * Update the element based on the provided data.
+   *
+   * @param element The DOM element to update.
+   * @param elementIndex The index of this element in the list of elements with the same name.
+   * @param value The serialized element value.
+   * @param valueIndex The index of the value in the list of values for elements with the same name.
+   * @param callback A function to call if the value of an element was updated.
+   */
+  function update( element, elementIndex, value, valueIndex, callback ) {
+    var property = getPropertyToUpdate( element );
+
+    // Handle value inputs
+    // If there are multiple value inputs with the same name, they will be populated by matching indexes.
+    if ( property == "value" && elementIndex == valueIndex ) {
+      element.value = value;
+      callback.call( element, value );
+
+    // Handle select menus, checkboxes and radio buttons
+    } else if ( property == "checked" || property == "selected" ) {
+      var fields = [];
+
+      // Extract option fields from select menus
+      if ( element.options ) {
+        $.each( element.options, function( index, option ) {
+          fields.push( option );
+        });
+
+      } else {
+        fields.push( element );
+      }
+
+      // #37: Remove selection from multiple select menus before deserialization
+      if ( element.multiple && valueIndex == 0 ) {
+        element.selectedIndex = -1;
+      }
+
+      $.each( fields, function( index, field ) {
+        if ( field.value == value ) {
+          field[ property ] = true;
+          callback.call( field, value );
         }
+      });
     }
+  }
 
-    if ( !( length = normalized.length ) ) {
-        return this;
-    }
+  /**
+   * Default plugin options.
+   *
+   * @type {object}
+   */
+  var defaultOptions = {
+    change: $.noop,
+    complete: $.noop
+  };
 
-    var current, element, j, len, name, property, type, value,
-        change = jQuery.noop,
-        complete = jQuery.noop,
-        names = {};
-
-    options = options || {};
-    elements = getElementsByName( elements );
+  /**
+   * The $.deserialize function.
+   *
+   * @param data The data to deserialize.
+   * @param options Additional options.
+   * @returns {jQuery} The jQuery object that was provided to the plugin.
+   */
+  $.fn.deserialize = function( data, options ) {
 
     // Backwards compatible with old arguments: data, callback
-    if ( jQuery.isFunction( options ) ) {
-        complete = options;
-
-    } else {
-        change = jQuery.isFunction( options.change ) ? options.change : change;
-        complete = jQuery.isFunction( options.complete ) ? options.complete : complete;
+    if ( $.isFunction( options ) ) {
+      options = { complete: options };
     }
 
-    for ( i = 0; i < length; i++ ) {
-        current = normalized[ i ];
+    options = $.extend( defaultOptions, options || {} );
+    data = normalizeData( data );
 
-        name = current.name;
-        value = current.value;
+    var elementsByName = getFieldsByName( this, options.filter );
 
-        if ( !( element = elements[ name ] ) ) {
-            continue;
-        }
+    $.each( data, function( name, values ) {
+      $.each( elementsByName[ name ], function( elementIndex, element ) {
+        $.each( values, function( valueIndex, value ) {
+          update( element, elementIndex, value, valueIndex, options.change );
+        });
+      });
+    });
 
-        type = ( len = element.length ) ? element[ 0 ] : element;
-        type = ( type.type || type.nodeName ).toLowerCase();
-        property = null;
-
-        if ( rvalue.test( type ) ) {
-            if ( len ) {
-                j = names[ name ];
-                element = element[ names[ name ] = ( j == undefined ) ? 0 : ++j ];
-            }
-
-            change.call( element, ( element.value = value ) );
-
-        } else if ( rcheck.test( type ) ) {
-            property = "checked";
-
-        } else if ( rselect.test( type ) ) {
-            property = "selected";
-        }
-
-        if ( property ) {
-            if ( !len ) {
-                element = [ element ];
-                len = 1;
-            }
-
-            for ( j = 0; j < len; j++ ) {
-                current = element[ j ];
-
-                if ( current.value == value ) {
-                    change.call( current, ( current[ property ] = true ) && value );
-                }
-            }
-        }
-    }
-
-    complete.call( this );
+    options.complete.call( this );
 
     return this;
-};
-
-})( jQuery );
+  };
+}));

@@ -1,5 +1,4 @@
-
-# jQuery.deserialize [#8980](http://bugs.jquery.com/ticket/8980)
+# jQuery.deserialize
 
     $("form").deserialize(data[, options]);
 
@@ -9,6 +8,26 @@ Decodes serialized form data and populates the form with that data. This method 
 * [jQuery.serializeArray()](http://api.jquery.com/serializeArray)
 * [jQuery.serializeObject()](http://benalman.com/projects/jquery-misc-plugins/#serializeobject) (unofficial)
 
+## Install
+
+Download as [NPM](http://npmjs.org) module:
+
+    npm install jquery-deserialize
+
+Download as [Bower](http://bower.io) component:
+
+    bower install jquery-deserialize
+
+## Example
+
+Populate a form on page load using query string parameters:
+
+```javascript
+jQuery(function( $ ) {
+    $( 'form' ).deserialize( location.search.substr( 1 ) );
+});
+```
+
 ## Arguments
 
 The plugin accepts two arguments: _data_ and _options_, the latter being optional. Passing the _complete()_ function as the second argument to this plugin is also supported.
@@ -17,6 +36,7 @@ The plugin accepts two arguments: _data_ and _options_, the latter being optiona
 * **options** _Object_ An object of key/value pairs that configure the plugin.
     *    **change** _Function_ Called for every changed input value.
     *    **complete** _Function_ Called when all of the inputs have been updated.
+	*    **filter** _String|Function|Element|jQuery_ A custom filter to identify inputs to deserialize. By default, all inputs that are not disabled will be deserialized (this matches the behavior of serialization).
 
 ## Requirements
 
@@ -26,5 +46,5 @@ jQuery.deserialize requires:
 
 ## License
 
-Copyright (c) 2012 Kyle Florence
+Copyright (c) 2017 Kyle Florence  
 jQuery.deserialize is dual licensed under MIT and GPLv2 licenses.
