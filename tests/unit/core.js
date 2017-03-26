@@ -31,11 +31,11 @@ function clearForm() {
 }
 
 $.each( [ "serialize", "serializeArray", "serializeObject" ], function( i, serializeMethod ) {
-    test( "jQuery.deserialize (" + serializeMethod + ")", function() {
+    test( "deserialize from " + serializeMethod, function() {
         var changeCalledCount = 0,
+			completeCalledCount = 0,
 			changeCount = originalData.length,
-			data = $form[ serializeMethod ](),
-			expects = 0;
+			data = $form[ serializeMethod ]();
 
 		clearForm();
 
@@ -44,13 +44,15 @@ $.each( [ "serialize", "serializeArray", "serializeObject" ], function( i, seria
 				changeCalledCount++;
 			},
 			complete: function() {
-				deepEqual( $form[ serializeMethod ](), data, "Serialized data matches deserialized data." );
-				equal( changeCalledCount, changeCount, "Change called for each changed input." );
-				expects += 2;
+				completeCalledCount++;
 			}
 		});
 
-		expect( expects );
+		deepEqual( $form[ serializeMethod ](), data, "Serialized data matches deserialized data." );
+		equal( changeCalledCount, changeCount, "Change called for each changed input." );
+		equal( completeCalledCount, 1, "Complete called after deserialization finished." );
+
+		expect( 3 );
     });
 });
 
@@ -67,5 +69,19 @@ test( "#34 Custom filter", function() {
 		filter: ":input"
 	});
 	equal( $disabledField.val(), "disabled", "Disabled field value has been set" );
+	expect( 2 );
+});
+
+test( "#37 Multiple select deserialization", function() {
+	var $selectMultiple = $( "[name=selectMultiple]" );
+
+	deepEqual( $selectMultiple.val(), [ "1", "2" ], "Multiple select value is [ 1, 2 ]." );
+
+	$form.deserialize( {
+		selectMultiple: [ "2", "3" ]
+	} );
+
+	deepEqual( $selectMultiple.val(), [ "2", "3" ], "Multiple select value is [ 2, 3 ].");
+
 	expect( 2 );
 });
