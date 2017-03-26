@@ -1,18 +1,17 @@
-# https://raw.githubusercontent.com/jquery/jquery/master/.editorconfig
-# editorconfig.org
+# This file is for unifying the coding style for different editors and IDEs.
+# http://editorconfig.org
 
+# This is the top-most configuration file.
 root = true
 
+# All files should have Unix-style newlines and the UTF-8 charset with newlines
+# ending every file and no trailing whitespace.
 [*]
-indent_style = tab
 end_of_line = lf
 charset = utf-8
-trim_trailing_whitespace = true
-insert_final_newline = true
-
-[*.json]
 indent_style = space
 indent_size = 2
+insert_final_newline = true
 
 # Allow trailing whitespace in Markdown files (it's part of the syntax)
 [*.md]

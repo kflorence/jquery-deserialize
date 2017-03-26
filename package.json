@@ -1,13 +1,13 @@
 {
   "name": "jquery-deserialize",
-  "version": "1.3.7",
+  "version": "2.0.0-rc1",
   "title": "jQuery.deserialize()",
   "main": "src/jquery.deserialize.js",
   "author": {
     "name": "Kyle Florence",
     "url": "https://github.com/kflorence/"
   },
-  "licenses": "(GPL-2.0 OR MIT)",
+  "license": "(GPL-2.0 OR MIT)",
   "dependencies": {
     "jquery": ">=1.4.3"
   },
