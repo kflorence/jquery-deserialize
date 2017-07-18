@@ -262,11 +262,13 @@
     var elementsByName = getFieldsByName( this, options.filter );
 
     $.each( data, function( name, values ) {
-      $.each( elementsByName[ name ], function( elementIndex, element ) {
-        $.each( values, function( valueIndex, value ) {
-          update( element, elementIndex, value, valueIndex, options.change );
+      if( name in elementsByName ) {
+        $.each( elementsByName[ name ], function( elementIndex, element ) {
+          $.each( values, function( valueIndex, value ) {
+            update( element, elementIndex, value, valueIndex, options.change );
+          });
         });
-      });
+      }
     });
 
     options.complete.call( this );
