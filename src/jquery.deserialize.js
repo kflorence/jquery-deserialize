@@ -206,6 +206,12 @@
 
     // Handle select menus, checkboxes and radio buttons
     } else if ( property == "checked" || property == "selected" ) {
+
+      // If the selects are select-ones then only update matching index with value
+      if( element.options && !element.multiple && elementIndex != valueIndex ){
+        return;
+      }
+
       var fields = [];
 
       // Extract option fields from select menus
