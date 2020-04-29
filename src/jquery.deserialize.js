@@ -262,7 +262,8 @@
     var elementsByName = getFieldsByName( this, options.filter );
 
     $.each( data, function( name, values ) {
-      $.each( elementsByName[ name ], function( elementIndex, element ) {
+      var selector = values.length > 1 ? `[name="${name}"],[name="${name}[]"]` : `[name="${name}"]`;
+      $.each( document.querySelectorAll(selector), function( elementIndex, element ) {
         $.each( values, function( valueIndex, value ) {
           update( element, elementIndex, value, valueIndex, options.change );
         });
