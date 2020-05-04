@@ -53,31 +53,6 @@
   }
 
   /**
-   * Get all of the fields contained within the given elements by name.
-   *
-   * @param $elements jQuery object of elements.
-   * @param filter Custom filter to apply to the list of fields.
-   * @returns {object} All of the fields contained within the given elements, keyed by name.
-   */
-  function getFieldsByName( $elements, filter ) {
-    var elementsByName = {};
-
-    // Extract fields from elements
-    var fields = $elements
-      .map(function convertFormToElements() {
-        return this.elements ? $.makeArray( this.elements ) : this;
-      })
-      .filter( filter || ":input:not(:disabled)" )
-      .get();
-
-    $.each( fields, function( index, field ) {
-      updateKeyValueArray( field.name, field, elementsByName );
-    });
-
-    return elementsByName;
-  }
-
-  /**
    * Figure out the type of an element. Input type will be used first, falling back to nodeName.
    *
    * @param element DOM element to check type of.
@@ -259,11 +234,11 @@
     options = $.extend( defaultOptions, options || {} );
     data = normalizeData( data );
 
-    var elementsByName = getFieldsByName( this, options.filter );
+    var formElement = $(this);
 
     $.each( data, function( name, values ) {
-      var selector = values.length > 1 ? `[name="${name}"],[name="${name}[]"]` : `[name="${name}"]`;
-      $.each( document.querySelectorAll(selector), function( elementIndex, element ) {
+      var elements = formElement.find(`[name="${name}"],[name="${name}[]"]`);
+      $.each( elements, function( elementIndex, element ) {
         $.each( values, function( valueIndex, value ) {
           update( element, elementIndex, value, valueIndex, options.change );
         });
