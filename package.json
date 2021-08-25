@@ -1,6 +1,6 @@
 {
   "name": "jquery-deserialize",
-  "version": "2.0.0-rc1",
+  "version": "2.0.0",
   "title": "jQuery.deserialize()",
   "main": "src/jquery.deserialize.js",
   "author": {
